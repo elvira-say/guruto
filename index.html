@@ -1,0 +1,2761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guruto — English you actually want to speak</title>
+<meta name="description" content="Guruto connects children with young tutors close enough in age to understand their world. A small, closed pilot.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#000000;
+    --near-black:#0a0a0a;
+    --violet:#7D39EB;
+    --violet-deep:#4c1d95;
+    --lime:#C6FF33;
+    --white:#ffffff;
+    --off-white:#f4f3ef;
+    --grey:#8a8a8a;
+    --radius:18px;
+    --wrap:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--white);
+    color:var(--black);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:400;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{max-width:100%;display:block;}
+  a{color:inherit;}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+
+  /* grain overlay, sits over everything */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:999;
+    pointer-events:none;
+    opacity:.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    line-height:1.02;
+    letter-spacing:-0.02em;
+    margin:0;
+    text-transform:none;
+  }
+  .eyebrow{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    opacity:.65;
+  }
+  p{margin:0;}
+  .lead{font-size:18px;font-weight:400;line-height:1.6;}
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:sticky;top:0;z-index:200;
+    background:rgba(0,0,0,.92);
+    backdrop-filter:blur(10px);
+    color:var(--white);
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  header.site .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:16px;padding-bottom:16px;
+  }
+  .logo{
+    font-weight:700;font-size:18px;letter-spacing:-0.01em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--lime);display:inline-block;}
+  nav.links{display:flex;gap:28px;font-size:13px;font-weight:500;}
+  nav.links a{text-decoration:none;opacity:.75;transition:opacity .15s;}
+  nav.links a:hover{opacity:1;}
+  .nav-ctas{display:flex;align-items:center;gap:14px;}
+  .lang-switch{display:flex;gap:2px;font-size:12px;font-weight:700;}
+  .lang-switch a{opacity:.45;text-decoration:none;padding:4px 6px;letter-spacing:.03em;}
+  .lang-switch a.active{opacity:1;color:var(--lime);}
+  @media (max-width:860px){ nav.links{display:none;} }
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:14px 26px;
+    border-radius:999px;
+    font-weight:600;font-size:14px;
+    text-decoration:none;
+    border:2px solid transparent;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-lime{background:var(--lime);color:var(--black);}
+  .btn-violet{background:var(--violet);color:var(--white);}
+  .btn-outline{background:transparent;border-color:currentColor;color:inherit;}
+  .btn-black{background:var(--black);color:var(--white);}
+  .btn-sm{padding:10px 18px;font-size:12.5px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:var(--black);
+    color:var(--white);
+    overflow:hidden;
+    padding:96px 0 110px;
+  }
+  .blob{
+    position:absolute;border-radius:50%;
+    filter:blur(90px);
+    mix-blend-mode:screen;
+    pointer-events:none;
+  }
+  .blob.v1{background:var(--violet);width:520px;height:520px;top:-160px;left:-140px;opacity:.65;animation:drift1 22s ease-in-out infinite;}
+  .blob.l1{background:var(--lime);width:440px;height:440px;bottom:-160px;right:-100px;opacity:.45;animation:drift2 26s ease-in-out infinite;}
+  .blob.v2{background:var(--violet);width:300px;height:300px;top:30%;right:12%;opacity:.35;animation:drift3 20s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,40px) scale(1.12);}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-30px) scale(1.08);}}
+  @keyframes drift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-30px,50px) scale(.9);}}
+
+  .hero .inner{position:relative;z-index:2;}
+  .hero-head{max-width:760px;margin:0 auto;text-align:center;}
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 20px;
+    border:1px solid rgba(198,255,51,.4);
+    background:rgba(198,255,51,.08);
+    border-radius:999px;
+    font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--lime);
+    margin-bottom:26px;
+  }
+  .hero h1{
+    font-size:clamp(40px,6.2vw,74px);
+    margin-bottom:22px;
+  }
+  .hero .lead{max-width:600px;color:rgba(255,255,255,.78);margin-bottom:8px;margin-left:auto;margin-right:auto;}
+  .hero .lead + .lead{margin-top:14px;}
+  .hero-tagline{
+    max-width:560px;margin:26px auto 0;font-size:19px;font-weight:600;line-height:1.5;color:rgba(255,255,255,.92);
+  }
+  .hero-tagline .hl{color:var(--lime);}
+
+  .path-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:1px;
+    margin-top:52px;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .path-card{
+    background:rgba(255,255,255,.03);
+    padding:32px 30px;
+  }
+  .path-card .eyebrow{color:var(--lime);opacity:1;margin-bottom:10px;}
+  .path-card h3{font-size:24px;margin-bottom:10px;color:var(--white);}
+  .path-card p{color:rgba(255,255,255,.7);font-size:14px;margin-bottom:22px;}
+  .path-card .age{display:block;font-size:12px;color:rgba(255,255,255,.45);margin-top:14px;}
+  @media (max-width:700px){ .path-grid{grid-template-columns:1fr;} }
+
+  .hero-note{
+    margin-top:28px;font-size:13px;color:rgba(255,255,255,.55);
+    text-align:center;
+  }
+
+  /* ---------- SECTION HELPERS ---------- */
+  section{padding:96px 0;position:relative;}
+  section.tight{padding:64px 0;}
+  .section-head{max-width:680px;margin-bottom:52px;}
+  .section-head .eyebrow{margin-bottom:14px;display:block;}
+  .section-head h2{font-size:clamp(28px,4vw,44px);}
+  .center{text-align:center;margin-left:auto;margin-right:auto;}
+
+  section.white{background:var(--white);color:var(--black);}
+  section.off{background:var(--off-white);color:var(--black);}
+  section.black{background:var(--near-black);color:var(--white);}
+  section.violet{background:var(--violet);color:var(--white);}
+  section.lime{background:var(--lime);color:var(--black);}
+
+  /* ---------- STUDENTS COPY BLOCK ---------- */
+  .story{max-width:680px;}
+  .story p{font-size:17px;line-height:1.8;margin-bottom:18px;color:rgba(0,0,0,.78);}
+  .story .quote{
+    font-size:clamp(24px,3vw,32px);
+    font-weight:600;
+    margin:34px 0;
+    letter-spacing:-.01em;
+  }
+  .story .quote span{background:linear-gradient(180deg,transparent 62%,var(--lime) 62%);padding:0 2px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+  @media (max-width:800px){ .two-col{grid-template-columns:1fr;gap:36px;} }
+
+  /* ---------- BENEFIT GRID ---------- */
+  .grid-cards{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:rgba(0,0,0,.1);border:1px solid rgba(0,0,0,.1);border-radius:var(--radius);overflow:hidden;
+  }
+  .grid-cards.cols-5{grid-template-columns:repeat(5,1fr);}
+  .card{background:var(--white);padding:28px 24px;}
+  .card .num{
+    font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--violet);margin-bottom:14px;display:block;
+  }
+  .card h4{font-size:17px;margin-bottom:8px;}
+  .card p{font-size:13.5px;color:var(--grey);line-height:1.6;}
+  @media (max-width:900px){ .grid-cards, .grid-cards.cols-5{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .grid-cards, .grid-cards.cols-5{grid-template-columns:1fr;} }
+
+  /* ---------- NUMBERED STEPS (tutors) ---------- */
+  .steps{position:relative;}
+  .step-row{
+    display:grid;grid-template-columns:120px 1fr;gap:28px;
+    padding:34px 0;border-top:1px solid rgba(255,255,255,.12);
+    position:relative;
+  }
+  .step-row:last-child{border-bottom:1px solid rgba(255,255,255,.12);}
+  .step-row .bignum{
+    font-size:64px;font-weight:700;color:transparent;
+    -webkit-text-stroke:1.5px rgba(255,255,255,.3);
+    line-height:1;
+  }
+  .step-row h4{font-size:20px;margin-bottom:8px;color:var(--white);}
+  .step-row p{color:rgba(255,255,255,.65);font-size:14.5px;max-width:520px;}
+  @media (max-width:600px){ .step-row{grid-template-columns:60px 1fr;} .step-row .bignum{font-size:40px;} }
+
+  .callout-line{
+    font-size:clamp(20px,2.6vw,28px);font-weight:600;line-height:1.4;max-width:640px;margin:56px 0 0;color:var(--white);
+  }
+  .callout-line .hl{color:var(--lime);}
+
+  /* ---------- PARENTS OF TUTORS ---------- */
+  .parent-box{
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+  }
+  .parent-box .art{
+    aspect-ratio:1/1;border-radius:var(--radius);
+    background:radial-gradient(circle at 30% 30%, rgba(0,0,0,.18), transparent 60%), var(--black);
+    position:relative;overflow:hidden;
+  }
+  .parent-box .art .blob{position:absolute;}
+  @media (max-width:800px){ .parent-box{grid-template-columns:1fr;} .parent-box .art{order:-1;aspect-ratio:16/9;} }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .timeline{border-top:2px solid var(--black);}
+  .tl-row{
+    display:grid;grid-template-columns:70px 200px 1fr;gap:20px;
+    padding:26px 0;border-bottom:2px solid var(--black);
+    align-items:baseline;
+  }
+  .tl-row .tl-num{font-size:22px;font-weight:700;}
+  .tl-row .tl-title{font-size:17px;font-weight:600;}
+  .tl-row .tl-body{font-size:14px;color:var(--grey);max-width:480px;}
+  @media (max-width:700px){ .tl-row{grid-template-columns:1fr;gap:6px;} .tl-row .tl-num{color:var(--violet);} }
+
+  /* ---------- TUTOR CARDS ---------- */
+  .tutor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  @media (max-width:900px){ .tutor-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:620px){ .tutor-grid{grid-template-columns:1fr;} }
+  .tutor-card{
+    border:2px solid var(--black);border-radius:var(--radius);
+    overflow:hidden;background:var(--white);
+    display:flex;flex-direction:column;
+  }
+  .tutor-photo{
+    aspect-ratio:4/3;
+    display:flex;align-items:center;justify-content:center;
+    font-size:52px;font-weight:700;color:var(--black);
+    position:relative;overflow:hidden;
+  }
+  .tutor-photo .blob{position:absolute;}
+  .tutor-photo span{position:relative;z-index:2;}
+  .tutor-body{padding:22px;flex:1;display:flex;flex-direction:column;gap:12px;}
+  .tutor-body .name-row{display:flex;justify-content:space-between;align-items:baseline;}
+  .tutor-body .name-row h4{font-size:19px;}
+  .tutor-body .level{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--off-white);color:var(--black);white-space:nowrap;}
+  .tutor-body .about{font-size:13.5px;color:var(--grey);line-height:1.6;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--off-white);}
+  .tag.help{background:var(--violet);color:var(--white);}
+  .tutor-body .avail{font-size:12px;color:var(--grey);border-top:1px dashed #ddd;padding-top:12px;margin-top:auto;}
+  .tutor-body .avail b{color:var(--black);}
+  .tutor-body .btn{margin-top:14px;width:100%;justify-content:center;}
+  .directory-note{font-size:12.5px;color:var(--grey);margin-top:26px;}
+
+  /* ---------- SAFETY ---------- */
+  .safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);overflow:hidden;}
+  .safety-card{background:rgba(255,255,255,.03);padding:30px 26px;}
+  .safety-card .icon{width:36px;height:36px;border-radius:10px;background:var(--lime);margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--black);font-size:15px;}
+  .safety-card h4{color:var(--white);font-size:16px;margin-bottom:8px;}
+  .safety-card p{color:rgba(255,255,255,.62);font-size:13.5px;line-height:1.6;}
+  @media (max-width:900px){ .safety-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .safety-grid{grid-template-columns:1fr;} }
+  .principle{margin-top:44px;font-size:15px;line-height:2;color:rgba(255,255,255,.85);}
+  .principle b{color:var(--lime);}
+
+  /* ---------- PILOT ---------- */
+  .pilot-box{max-width:720px;}
+  .pilot-list{list-style:none;padding:0;margin:24px 0 34px;}
+  .pilot-list li{padding:10px 0 10px 26px;position:relative;font-size:15px;color:rgba(255,255,255,.85);}
+  .pilot-list li::before{content:"—";position:absolute;left:0;color:var(--lime);}
+  .pilot-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;}
+  .pilot-note{margin-top:22px;font-size:13px;color:rgba(255,255,255,.5);}
+
+  /* ---------- FAQ ---------- */
+  .faq-list details{
+    border-bottom:2px solid var(--black);padding:22px 0;
+  }
+  .faq-list details:first-child{border-top:2px solid var(--black);}
+  .faq-list summary{
+    cursor:pointer;list-style:none;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+    font-size:17px;font-weight:600;
+  }
+  .faq-list summary::-webkit-details-marker{display:none;}
+  .faq-list summary::after{
+    content:"+";font-size:22px;font-weight:400;color:var(--violet);flex-shrink:0;transition:transform .2s;
+  }
+  .faq-list details[open] summary::after{transform:rotate(45deg);}
+  .faq-list .a{font-size:14.5px;color:var(--grey);line-height:1.7;margin-top:14px;max-width:640px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--black);color:rgba(255,255,255,.6);padding:56px 0 34px;font-size:13px;}
+  footer .foot-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.12);}
+  footer .foot-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--white);}
+  footer .foot-links{display:flex;gap:22px;flex-wrap:wrap;}
+  footer .foot-links a{text-decoration:none;color:rgba(255,255,255,.6);}
+  footer .foot-links a:hover{color:var(--lime);}
+  footer .foot-bottom{padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+
+  .final-cta{
+    position:relative;overflow:hidden;
+  }
+
+  .lang-page{display:none;}
+  .lang-page.active{display:block;}
+
+  /* ---------- APPLICATION FORMS ---------- */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px;}
+  .form-field{display:flex;flex-direction:column;gap:7px;}
+  .form-field.full{grid-column:1/-1;}
+  .form-field label, .form-field .group-label, .group-label{font-size:13px;font-weight:600;}
+  .form-field .hint, .group-label .hint{display:block;font-size:12px;font-weight:400;color:var(--grey);margin-top:2px;}
+  input[type=text],input[type=number],input[type=email],input[type=tel],input[type=url],select,textarea{
+    padding:12px 14px;border:2px solid var(--black);border-radius:10px;font-family:inherit;font-size:14px;background:var(--white);color:var(--black);width:100%;
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--violet);outline-offset:1px;}
+  textarea{resize:vertical;min-height:90px;}
+  select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--black) 50%),linear-gradient(135deg,var(--black) 50%,transparent 50%);background-position:calc(100% - 20px) center,calc(100% - 15px) center;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px;}
+  .check-grid,.radio-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .check-pill,.radio-pill{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--black);border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer;background:var(--white);transition:background .12s,color .12s;}
+  .check-pill:has(input:checked),.radio-pill:has(input:checked){background:var(--black);color:var(--white);}
+  .check-pill input,.radio-pill input{margin:0;accent-color:var(--violet);}
+  .file-input{border:2px dashed var(--black);border-radius:10px;padding:14px;font-size:13px;background:var(--white);width:100%;}
+  .form-section-title{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);margin:40px 0 18px;}
+  .app-form .form-section-title:first-of-type{margin-top:12px;}
+  .consent-row{display:flex;align-items:flex-start;gap:10px;margin-top:32px;padding-top:26px;border-top:2px solid var(--black);}
+  .consent-row input{margin-top:3px;accent-color:var(--violet);flex-shrink:0;}
+  .consent-row label{font-size:13px;line-height:1.65;color:var(--grey);}
+  .open-policy-link{color:var(--black);font-weight:600;text-decoration:underline;cursor:pointer;}
+  .form-note{font-size:12.5px;color:var(--grey);margin-top:14px;}
+  .form-success{background:var(--black);color:var(--white);border-radius:var(--radius);padding:48px 40px;text-align:center;}
+  .form-success h3{color:var(--lime);font-size:26px;margin-bottom:12px;}
+  .form-success p{color:rgba(255,255,255,.75);max-width:460px;margin:0 auto;font-size:15px;line-height:1.6;}
+  @media (max-width:700px){ .form-grid{grid-template-columns:1fr;} }
+
+  /* ---------- POLICY MODAL ---------- */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:flex-start;justify-content:center;z-index:500;padding:60px 20px;overflow-y:auto;}
+  .modal-backdrop.open{display:flex;}
+  .modal-box{background:var(--white);color:var(--black);max-width:720px;width:100%;border-radius:var(--radius);padding:44px;position:relative;margin-bottom:60px;}
+  .modal-box.wide{max-width:900px;}
+  .modal-close{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:50%;background:var(--off-white);border:none;font-size:16px;cursor:pointer;line-height:1;}
+  .modal-box h3{font-size:24px;margin-bottom:10px;}
+  .modal-box h4{font-size:15px;margin:24px 0 8px;}
+  .modal-box p{font-size:13.5px;line-height:1.7;color:rgba(0,0,0,.72);margin-bottom:4px;}
+  .modal-box li{font-size:13.5px;line-height:1.7;color:rgba(0,0,0,.72);}
+  .modal-box ul{padding-left:18px;margin:8px 0;}
+  .modal-box .modal-meta{font-size:12px;color:var(--grey);margin-bottom:20px;}
+  .modal-box .warn{background:var(--off-white);border-left:3px solid var(--violet);padding:14px 16px;font-size:12.5px;border-radius:8px;margin-bottom:8px;color:rgba(0,0,0,.72);}
+  body.modal-lock{overflow:hidden;}
+
+  /* ---------- STEPPED APPLICATION FLOW ---------- */
+  .gq{font-size:15px;}
+  .gq-eyebrow{display:block;color:var(--violet);margin-bottom:16px;}
+  .gq-head{margin-bottom:26px;}
+  .gq-bar{height:4px;background:rgba(0,0,0,.12);border-radius:99px;overflow:hidden;}
+  .gq-bar i{display:block;height:100%;background:var(--violet);transition:width .35s ease;}
+  .gq-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+  .gq-badge{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    background:var(--black);color:var(--lime);border-radius:99px;padding:5px 12px;}
+  .gq-count{font-size:12px;color:var(--grey);}
+  .gq-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,5vw,36px);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 10px;}
+  .gq-lede{font-size:16px;line-height:1.6;color:var(--grey);margin:0 0 28px;max-width:52ch;}
+  .gq-q{padding:22px 0;border-top:2px solid var(--black);}
+  .gq-q:first-of-type{border-top:0;padding-top:0;}
+  .gq-label{font-size:16px;font-weight:600;letter-spacing:-.01em;margin-bottom:4px;}
+  .gq-hint{font-size:13px;color:var(--grey);margin:0 0 12px;max-width:54ch;line-height:1.55;}
+  .gq-q input[type=text],.gq-q input[type=number],.gq-q textarea{margin-top:4px;}
+  .gq-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media (max-width:560px){ .gq-two{grid-template-columns:1fr;} }
+  .gq-pills{display:flex;flex-wrap:wrap;gap:8px;}
+  .gq-pill{border:2px solid var(--black);background:var(--white);color:var(--black);
+    border-radius:999px;padding:9px 15px;font-size:13.5px;font-family:inherit;cursor:pointer;
+    transition:background .12s,color .12s;}
+  .gq-pill[aria-pressed="true"]{background:var(--black);color:var(--white);}
+  .gq-other{margin-top:10px;}
+  .gq-fus{display:grid;gap:10px;margin-top:14px;}
+  .gq-fu{display:grid;gap:4px;padding-left:12px;border-left:3px solid var(--lime);}
+  .gq-fu b{font-size:13px;font-weight:700;}
+  .gq-slider{margin:14px 0;}
+  .gq-ends{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--grey);}
+  .gq input[type=range]{width:100%;accent-color:var(--violet);}
+  .gq-grid{display:grid;grid-template-columns:auto repeat(7,1fr);gap:5px;align-items:center;}
+  .gq-hd{text-align:center;font-size:11.5px;color:var(--grey);}
+  .gq-rl{font-size:11.5px;color:var(--grey);padding-right:6px;white-space:nowrap;}
+  .gq-cell{aspect-ratio:1;border:2px solid var(--black);border-radius:8px;background:var(--white);cursor:pointer;padding:0;}
+  .gq-cell[aria-pressed="true"]{background:var(--violet);border-color:var(--violet);}
+  .gq-consent{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.12);}
+  .gq-consent:last-of-type{border-bottom:0;}
+  .gq-consent input{margin-top:4px;accent-color:var(--violet);flex-shrink:0;width:18px;height:18px;}
+  .gq-consent label{font-size:14px;line-height:1.55;}
+  .gq-more{background:none;border:0;padding:0 0 0 8px;color:var(--violet);font-family:inherit;
+    font-size:12.5px;text-decoration:underline;cursor:pointer;}
+  .gq-legal{display:none;font-size:12.5px;color:var(--grey);line-height:1.6;margin-top:6px;
+    background:var(--off-white);border-left:3px solid var(--violet);border-radius:8px;padding:12px 14px;}
+  .gq-legal.open{display:block;}
+  .gq-sign{margin-top:14px;}
+  .gq-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+  .gq-slot{border:2px solid var(--black);background:var(--white);color:var(--black);border-radius:12px;
+    padding:12px;font-family:inherit;font-size:14px;cursor:pointer;}
+  .gq-slot[aria-pressed="true"]{background:var(--black);color:var(--white);}
+  .gq-stage{position:relative;background:var(--black);border-radius:var(--radius);aspect-ratio:3/4;
+    max-height:48vh;display:flex;align-items:center;justify-content:center;overflow:hidden;
+    color:var(--white);text-align:center;padding:26px;}
+  .gq-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+  .gq-prompt{position:relative;z-index:2;font-weight:700;font-size:clamp(18px,4.4vw,24px);
+    line-height:1.2;letter-spacing:-.02em;text-shadow:0 2px 18px rgba(0,0,0,.9);}
+  .gq-ring{position:absolute;top:14px;right:14px;z-index:3;width:46px;height:46px;}
+  .gq-ring circle{fill:none;stroke-width:4;}
+  .gq-ring .bg{stroke:rgba(255,255,255,.25);}
+  .gq-ring .fg{stroke:var(--lime);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;}
+  .gq-tips{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:5px;font-size:13px;color:var(--grey);}
+  .gq-tips li{padding-left:16px;position:relative;}
+  .gq-tips li::before{content:"—";position:absolute;left:0;color:var(--violet);}
+  .gq-btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
+  .gq-note{font-size:12.5px;color:var(--grey);margin-top:10px;line-height:1.6;max-width:52ch;}
+  .gq-nav{display:flex;gap:10px;margin-top:30px;padding-top:24px;border-top:2px solid var(--black);}
+  .gq-nav .btn{flex:0 0 auto;}
+  .gq-handoff{padding-top:4px;}
+  .gq-done{background:var(--black);color:var(--white);border-radius:var(--radius);padding:44px 36px;}
+  .gq-done h3{color:var(--lime);font-size:26px;margin-bottom:12px;}
+  .gq-done p{color:rgba(255,255,255,.75);font-size:15px;line-height:1.6;max-width:46ch;}
+  .gq-done .btn-outline{color:var(--white);}
+  .gq-dump{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);border-radius:12px;padding:14px;
+    font-size:11.5px;line-height:1.5;overflow:auto;max-height:40vh;white-space:pre-wrap;word-break:break-word;margin-top:14px;}
+  @media (max-width:700px){ .gq-stage{aspect-ratio:4/5;} }
+  .gq-req::after{content:" *";color:var(--violet);font-weight:700;}
+  .gq-q--err{background:rgba(124,57,235,.05);border-radius:12px;padding-left:14px;padding-right:14px;
+    box-shadow:inset 3px 0 0 var(--violet);}
+  .gq-err{font-size:12.5px;color:var(--violet);font-weight:600;margin-top:10px;}
+  .gq-copy{display:inline-block;padding:0;font-size:14px;}
+  .gq-wrap h3{font-size:22px;letter-spacing:-.02em;margin:0 0 12px;}
+  .gq-wrap p{font-size:15px;line-height:1.65;color:var(--grey);margin:0 0 12px;max-width:52ch;}
+
+</style>
+</head>
+<body>
+
+<div class="lang-page" data-lang="en">
+<header class="site">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>Guruto</div>
+    <nav class="links">
+      <a href="#students-en">For Parents</a>
+      <a href="#tutors-en">For Tutors</a>
+      <a href="#directory-en">Meet Tutors</a>
+      <a href="#safety-en">Safety</a>
+      <a href="#faq-en">FAQ</a>
+    </nav>
+    <div class="nav-ctas">
+      <div class="lang-switch">
+        <a href="#" data-lang="en">EN</a>
+        <a href="#" data-lang="ru">RU</a>
+        <a href="#" data-lang="es">ES</a>
+      </div>
+      <a class="btn btn-outline btn-sm" href="#" data-open-modal="student-form">Find a tutor</a>
+      <a class="btn btn-lime btn-sm" href="#" data-open-modal="tutor-form">Become a tutor</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home-en">
+  <div class="blob v1"></div>
+  <div class="blob l1"></div>
+  <div class="blob v2"></div>
+  <div class="wrap inner">
+    <div class="hero-head">
+      <span class="hero-badge">Guruto · Closed Pilot</span>
+      <h1>English you actually want to speak.</h1>
+      <p class="lead">Not another lesson where the student has to get everything right. A space where they can talk, try, make mistakes, laugh, ask questions — and gradually become more confident speaking English.</p>
+      <p class="lead">Guruto connects children with young tutors who are close enough in age to understand their world, interests and way of communicating.</p>
+      <p class="hero-tagline">You don't have to be an expert to teach. <span class="hl">You just have to be one step ahead.</span></p>
+    </div>
+
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="eyebrow">For teens &amp; parents</span>
+        <h3>I want to become a tutor</h3>
+        <p>Practice mentoring, work with real students, and build your first professional experience.</p>
+        <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Become a tutor →</a>
+        <span class="age">Ages 12–18.</span>
+      </div>
+      <div class="path-card">
+        <span class="eyebrow">For parents &amp; students</span>
+        <h3>I'm looking for a tutor</h3>
+        <p>Help the student find someone they can actually talk to.</p>
+        <a class="btn btn-violet" href="#" data-open-modal="student-form">Find a tutor →</a>
+        <span class="age">For students ages 10 to 18.</span>
+      </div>
+    </div>
+
+    <p class="hero-note">We're currently running a small pilot. After you apply, our team will contact you personally via WhatsApp.</p>
+  </div>
+</section>
+
+<!-- FOR STUDENTS & PARENTS -->
+<section class="white" id="students-en">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">For students &amp; parents</span>
+      <h2>The goal isn't perfect English.<br>It's the courage to use it.</h2>
+    </div>
+    <div class="story">
+      <p>One of the most valuable things that can happen during a language lesson is surprisingly simple: a child starts talking.</p>
+      <p>Not because they know every grammar rule. Not because they have memorized every word. Because they stop being afraid of making a mistake.</p>
+      <p>With a young tutor, the student can talk about things that actually matter to them — games, music, sports, school, movies, books, friends, whatever they're into. They can get stuck on a word and find another way to explain it. They can ask questions. They can laugh. They can talk about absolutely everything. They can simply loosen up and start speaking.</p>
+      <div class="quote">And sometimes, after a while, something changes: <span>"I can actually speak English."</span></div>
+      <p>That feeling matters. Because confidence in using a language doesn't come only from knowing more. It comes from using what you already know — again and again, without being afraid.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY A YOUNG TUTOR -->
+<section class="violet" id="why-en">
+  <div class="wrap two-col">
+    <div>
+      <span class="eyebrow" style="color:var(--black)">Why a young tutor?</span>
+      <h2 style="margin-top:14px;color:var(--white);">Less distance.<br>More conversation.</h2>
+    </div>
+    <div>
+      <p class="lead" style="color:rgba(255,255,255,.85);margin-bottom:16px;">There are things that can be easier to learn from someone who is just a little ahead of you. A young tutor may understand the games the student plays, the things they watch, the music they listen to and the questions they have.</p>
+      <p class="lead" style="color:rgba(255,255,255,.85);margin-bottom:16px;">There is less of a "teacher vs. student" feeling. More like: <b style="color:var(--lime)">"Let's figure this out together."</b></p>
+      <p class="lead" style="color:rgba(255,255,255,.85);">The lesson can still have structure and purpose. But it doesn't have to feel like another hour of school. Because the best conversation practice is a conversation you want to have.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOUR CHILD CAN GET -->
+<section class="white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">What the student gets</span>
+      <h2>Five things that add up to one big shift.</h2>
+    </div>
+    <div class="grid-cards cols-5">
+      <div class="card"><span class="num">01</span><h4>Courage to speak</h4><p>A safe place to try English without waiting until every sentence is perfect.</p></div>
+      <div class="card"><span class="num">02</span><h4>More natural conversation</h4><p>Less translating in your head. More listening, reacting, asking and answering.</p></div>
+      <div class="card"><span class="num">03</span><h4>Confidence</h4><p>The experience of being understood — and realizing you can make yourself understood.</p></div>
+      <div class="card"><span class="num">04</span><h4>A real connection</h4><p>A tutor who may share their interests, references and sense of humor.</p></div>
+      <div class="card" style="background:var(--lime);"><span class="num" style="color:var(--black);">05</span><h4>"I can do this."</h4><p style="color:rgba(0,0,0,.65);">The feeling that sticks after the lesson ends.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR TEEN TUTORS -->
+<section class="black" id="tutors-en">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--lime)">For teen tutors</span>
+      <h2 style="color:var(--white);">What if what you know is<br>already enough to help someone?</h2>
+      <p class="lead" style="color:rgba(255,255,255,.65);margin-top:22px;">You don't have to wait until you're an adult to get your first real experience. At Guruto, we help teenagers turn something they already know into something useful for another person. You practice mentoring — shaping your own lessons and learning to communicate with a real learner. Then, when you're ready, you put those skills to work with a real student.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-row">
+        <span class="bignum">01</span>
+        <div><h4>Practice mentoring</h4><p>Listening, explaining, encouraging, helping someone move forward — skills you build by actually doing them, not from a manual.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">02</span>
+        <div><h4>Shape your own lesson</h4><p>Turn what you know into something clear and engaging, in your own way.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">03</span>
+        <div><h4>Meet a real student</h4><p>When you're ready, you move from practicing on your own to actually teaching someone.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">04</span>
+        <div><h4>Earn from your work</h4><p>Your first paid lessons become your first real professional experience.</p></div>
+      </div>
+    </div>
+
+    <p class="callout-line">You're not supposed to know everything. You just need to know enough to help someone who is <span class="hl">a little earlier in their journey.</span></p>
+    <p class="callout-line" style="margin-top:20px;">For the tutor, it's a chance to discover: <span class="hl">"I can actually be useful to someone."</span></p>
+
+    <div style="margin-top:48px;">
+      <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Become a tutor →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOR PARENTS OF TUTORS -->
+<section class="off">
+  <div class="wrap parent-box">
+    <div class="art">
+      <div class="blob v1" style="width:280px;height:280px;top:20%;left:10%;"></div>
+      <div class="blob l1" style="width:220px;height:220px;bottom:10%;right:10%;"></div>
+    </div>
+    <div>
+      <span class="eyebrow" style="color:var(--violet)">For parents of teen tutors</span>
+      <h2 style="margin-top:14px;">Their first work experience — with a trusted adult still in the picture.</h2>
+      <p class="lead" style="margin-top:18px;color:var(--grey);">We don't think teenagers need to choose between independence and adult support. Parents are part of the model from the beginning. You help verify your teen's identity, stay informed about their participation, and remain an available adult contact during the process.</p>
+      <p class="lead" style="margin-top:14px;font-weight:600;">The aim is simple: give a teenager real responsibility without asking parents to step away.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">How it works</span>
+      <h2>From "I'd like to try" to the first real conversation.</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-row">
+        <span class="tl-num">01</span>
+        <span class="tl-title">Apply</span>
+        <span class="tl-body">Tell us about yourself, your English, your interests and your availability. For tutors, a parent or guardian is part of the application. For students, parents tell us about the student's age, English level, interests and goals.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">02</span>
+        <span class="tl-title">We get to know you</span>
+        <span class="tl-body">We review tutor applications and prepare profiles for approved tutors. For students, we look for a good match based on age, interests, goals and availability.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">03</span>
+        <span class="tl-title">Find a match</span>
+        <span class="tl-body">Browse suitable tutor profiles and choose someone who feels like a good fit.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">04</span>
+        <span class="tl-title">Choose a time</span>
+        <span class="tl-body">Select an available time and send a request.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">05</span>
+        <span class="tl-title">We confirm everything</span>
+        <span class="tl-body">During the pilot, our team personally confirms the match, time and next steps with you via WhatsApp.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">06</span>
+        <span class="tl-title">Have the conversation</span>
+        <span class="tl-body">The lesson happens online. The goal is simple: talk, try, learn — and become a little more confident.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEET THE TUTORS -->
+<section class="off" id="directory-en">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Meet the tutors</span>
+      <h2>Find someone the student might actually want to talk to.</h2>
+      <p class="lead" style="margin-top:16px;color:var(--grey);">Each tutor profile tells you a little about the person behind the screen.</p>
+    </div>
+
+    <div class="tutor-grid">
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--violet);">
+          <div class="blob l1" style="width:200px;height:200px;top:-40px;right:-40px;opacity:.6;"></div>
+          <span style="color:var(--white);">M</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Mia</h4><span class="level">Native speaker</span></div>
+          <p class="about">"I love reading fantasy books and I'm learning to code. I've helped my little cousin with English homework for two years and honestly — it's really fun."</p>
+          <div class="tag-row">
+            <span class="tag help">Conversation</span>
+            <span class="tag help">School English</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Books</span>
+            <span class="tag">Coding</span>
+            <span class="tag">Art</span>
+          </div>
+          <div class="avail"><b>Mon · Wed · Fri</b> — Afternoon, Evening · US Eastern (ET)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Request this tutor</a>
+        </div>
+      </div>
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--lime);">
+          <div class="blob v1" style="width:200px;height:200px;bottom:-50px;left:-30px;opacity:.55;"></div>
+          <span>J</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Jordan</h4><span class="level">Native speaker</span></div>
+          <p class="about">"Soccer, video games, and terrible puns. I'm patient and I promise I won't judge your accent — mine's pretty weird too."</p>
+          <div class="tag-row">
+            <span class="tag help">Conversation</span>
+            <span class="tag help">Travel English</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Sports</span>
+            <span class="tag">Gaming</span>
+            <span class="tag">Music</span>
+          </div>
+          <div class="avail"><b>Tue · Thu · Sat</b> — Morning, Afternoon · US Central (CT)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Request this tutor</a>
+        </div>
+      </div>
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--black);">
+          <div class="blob v1" style="width:180px;height:180px;top:-30px;left:20%;opacity:.6;"></div>
+          <div class="blob l1" style="width:160px;height:160px;bottom:-40px;right:0;opacity:.5;"></div>
+          <span style="color:var(--white);">S</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Sofia</h4><span class="level">Fully fluent</span></div>
+          <p class="about">"I moved around a lot growing up, so I get what it's like to feel unsure about a language. Let's just talk — about anything."</p>
+          <div class="tag-row">
+            <span class="tag help">Conversation</span>
+            <span class="tag help">Exam Prep</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Movies &amp; TV</span>
+            <span class="tag">Travel</span>
+            <span class="tag">Animals</span>
+          </div>
+          <div class="avail"><b>Weekends</b> — Morning, Evening · Costa Rica / US Central (CT)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Request this tutor</a>
+        </div>
+      </div>
+
+    </div>
+    <p class="directory-note">Tutor profiles shown here have been reviewed as part of our pilot. These three are placeholder examples — real approved profiles go here as they're added.</p>
+  </div>
+</section>
+
+<!-- SAFETY & TRUST -->
+<section class="black" id="safety-en">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--lime)">Safety &amp; trust</span>
+      <h2 style="color:var(--white);">Young people get real responsibility.<br>Adults stay close.</h2>
+      <p class="lead" style="margin-top:18px;color:rgba(255,255,255,.65);">We don't ask families to choose between opportunity and safety. That's why adult involvement is built into the model.</p>
+    </div>
+
+    <div class="safety-grid">
+      <div class="safety-card">
+        <div class="icon">✓</div>
+        <h4>Parents are verified — on both sides</h4>
+        <p>A parent or guardian of every young tutor, and a parent or guardian of every student, take part before lessons begin and remain a known adult contact.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">●</div>
+        <h4>Lessons are recorded</h4>
+        <p>Sessions are recorded for transparency and accountability, with access to recordings limited.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">✎</div>
+        <h4>Communication is moderated</h4>
+        <p>Communication around lessons follows a moderated process with clear rules for how tutors and students interact.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">⇄</div>
+        <h4>Matches are considered carefully</h4>
+        <p>We consider age, maturity and a reasonable age gap when matching tutors and students.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">🔒</div>
+        <h4>Your information is protected</h4>
+        <p>Every application includes clear consent, and we explain what we collect and why in our Privacy Policy.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">i</div>
+        <h4>Parents stay informed</h4>
+        <p>Parents of tutors remain involved, and parents of students know how the process works.</p>
+      </div>
+    </div>
+
+    <p class="principle">Our principle is simple: <b>teenagers</b> should be able to take their first steps into real work. <b>Children</b> should have a space where they can become more confident speaking English. And <b>parents</b> should know who is involved.</p>
+  </div>
+</section>
+
+<!-- THIS IS A PILOT -->
+<section class="violet final-cta">
+  <div class="blob l1" style="width:360px;height:360px;top:-100px;right:-80px;opacity:.35;filter:blur(100px);"></div>
+  <div class="wrap pilot-box">
+    <span class="eyebrow" style="color:var(--black)">This is a pilot</span>
+    <h2 style="margin-top:14px;color:var(--white);">We're building it with the first families.</h2>
+    <p class="lead" style="margin-top:16px;color:rgba(255,255,255,.85);">Guruto is currently a small pilot. Some parts are intentionally personal and manual.</p>
+    <ul class="pilot-list">
+      <li>We review applications ourselves.</li>
+      <li>We help families find a good match.</li>
+      <li>We coordinate the first steps directly.</li>
+    </ul>
+    <p class="lead" style="color:rgba(255,255,255,.85);">There is no need to pretend we're already a giant automated platform. We're building the model carefully — together with the first tutors, students and parents.</p>
+
+    <p style="margin-top:30px;font-weight:600;color:var(--white);">Want to be part of it?</p>
+    <div class="pilot-ctas">
+      <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Apply as a tutor</a>
+      <a class="btn btn-black" href="#" data-open-modal="student-form">Find a tutor</a>
+    </div>
+    <p class="pilot-note">Places in the pilot are currently limited.</p>
+  </div>
+</section>
+
+
+
+<div class="modal-backdrop" data-modal="tutor-form-en">
+  <div class="modal-box wide">
+    <button class="modal-close" type="button" aria-label="Close">&#10005;</button>
+    <div class="gq" data-flow="tutor" data-lang="en" data-title="Become a tutor." data-eyebrow="Apply — Tutor"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" data-modal="student-form-en">
+  <div class="modal-box wide">
+    <button class="modal-close" type="button" aria-label="Close">&#10005;</button>
+    <div class="gq" data-flow="student" data-lang="en" data-title="Find a tutor." data-eyebrow="Apply — Student"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" data-modal="policy-en">
+  <div class="modal-box">
+    <button class="modal-close" type="button" aria-label="Close">&#10005;</button>
+    <h3>Privacy Policy — pilot program</h3>
+    <div class="modal-meta">Working draft · Not final legal advice · Replace [bracketed] placeholders before publishing</div>
+    <div class="warn">This is a plain-language draft written to be honest and usable during our closed pilot. It isn't a substitute for review by a lawyer familiar with children's privacy law. We'll have it reviewed before scaling past this pilot.</div>
+    
+    <h4>Who we are</h4>
+    <p>Guruto ("we," "us") runs a small, closed pilot connecting teenage tutors (ages 12–18) with children and teens (ages 10 and up) for English conversation practice. This policy explains what we collect through our application forms and website, why, and how it's handled. We've tried to write it in plain language, since most people using this pilot are children — ask us if anything is unclear.</p>
+
+    <h4>What we collect</h4>
+    <p><b>From a tutor applicant and their parent/guardian:</b> first name, age, English level, a short bio, hobbies/interests, a photo, and availability; optionally a short intro video; the parent's name and contact info; confirmation that a parent consents to participation.</p>
+    <p><b>From a student applicant and their parent/guardian:</b> the child's first name, age, English level, goals, interests, and availability; the parent's name and contact info; confirmation that a parent consents to participation.</p>
+    <p><b>During lessons:</b> video/audio recordings, and messages sent through our moderated communication channel.</p>
+    <p>We only ask for what we need to run a safe match and coordinate a lesson.</p>
+
+    <h4>Why we collect it</h4>
+    <ul>
+      <li>To review and approve tutor applications</li>
+      <li>To match tutors and students by age, level, interests and availability</li>
+      <li>To publish an approved tutor's first name, photo, bio and availability on our public directory — never their age, last name, or contact information</li>
+      <li>To let a family request a specific tutor and time</li>
+      <li>To confirm matches and next steps, currently done personally via WhatsApp</li>
+      <li>To review recordings for safety and quality</li>
+      <li>To contact parents/guardians about participation</li>
+    </ul>
+    <p>We don't use this information for advertising, and we don't sell it.</p>
+
+    <h4>Who can see it</h4>
+    <p>Our small pilot team; the matched family, as needed to coordinate a lesson. Recordings are only reviewed by our safety team and are never shared publicly. If we become aware of something that puts a child's safety at risk, we may report it to the appropriate authorities — that matters more to us than keeping information private.</p>
+
+    <h4>How long we keep it</h4>
+    <p>Recordings: kept for [30] days, then deleted. Applications: kept while the pilot is active, or until you ask us to delete them.</p>
+
+    <h4>Children's privacy</h4>
+    <p>Because many people on this platform are under 13, we collect a child's information only with a parent's consent; we don't ask for more than we need; a parent can review, correct or delete their child's information at any time; and we never use a child's information for targeted advertising or to train AI tools without separately asking again.</p>
+
+    <h4>Your rights</h4>
+    <p>You — or, for a child, their parent/guardian — can ask us at any time to see, correct or delete your information, or withdraw consent. During the pilot, just message us; there's no separate portal yet.</p>
+
+    <h4>Security</h4>
+    <p>We take reasonable steps to limit who on our team can access this information. As a small pilot, our systems are simpler than a large company's — we'd rather be upfront about that than overpromise.</p>
+
+    <h4>Changes</h4>
+    <p>This is a pilot, so this policy may change as we learn. If a change affects what we do with your information, we'll tell you directly.</p>
+
+    <h4>Contact</h4>
+    <p>Questions or requests: [email/contact]</p>
+  
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="white" id="faq-en">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">FAQ</span>
+      <h2>Questions worth answering upfront.</h2>
+    </div>
+    <div class="faq-list">
+      <details open>
+        <summary>What ages do you work with?</summary>
+        <p class="a">Tutors are 12 to 18. Students are 10 to 18.</p>
+      </details>
+      <details>
+        <summary>Is this a regular English tutoring service?</summary>
+        <p class="a">Not exactly. The main goal of the pilot is to give children meaningful English conversation practice and help them become more confident using the language. Lessons can have structure and a topic, but we are not promising a traditional grammar-heavy curriculum.</p>
+      </details>
+      <details>
+        <summary>Will my child improve their grammar?</summary>
+        <p class="a">They may learn grammar naturally through conversation and practice, but grammar instruction is not the main promise of the pilot. Our first priority is helping children use English more freely and confidently.</p>
+      </details>
+      <details>
+        <summary>Why have a teenager teach my child?</summary>
+        <p class="a">Because being close in age can make communication easier. A young tutor may understand the student's interests, references and way of communicating in a way that creates a more natural conversation.</p>
+      </details>
+      <details>
+        <summary>Is it safe?</summary>
+        <p class="a">Parents on both sides are part of the process, young tutors have a verified parent or guardian, lessons are recorded, communication is moderated, and age is considered when matching tutors and students.</p>
+      </details>
+      <details>
+        <summary>How are tutors selected?</summary>
+        <p class="a">We review each application, including age, English level, experience, interests and availability.</p>
+      </details>
+      <details>
+        <summary>What if my child doesn't connect with the tutor?</summary>
+        <p class="a">Tell us. A good match matters more than forcing a pairing. During the pilot, our team will help you look for a better fit.</p>
+      </details>
+      <details>
+        <summary>How does payment work?</summary>
+        <p class="a">Payment terms are explained and confirmed with the family before the first lesson. We are currently testing the model, so we don't publish fixed prices yet.</p>
+      </details>
+      <details>
+        <summary>Can we join if we're outside the US?</summary>
+        <p class="a">We're starting with a small international pilot. Send us your location and we'll let you know whether we can currently support your family.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">Guruto</div>
+        <p style="margin-top:8px;max-width:280px;">A small, closed pilot connecting young tutors with students who want to speak with more confidence.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#students-en">For Parents</a>
+        <a href="#tutors-en">For Tutors</a>
+        <a href="#directory-en">Meet Tutors</a>
+        <a href="#safety-en">Safety &amp; Trust</a>
+        <a href="#faq-en">FAQ</a>
+        <a href="#" class="open-policy-link" data-open-modal="policy">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© Guruto, [Year]. All rights reserved.</span>
+      <span>Questions? <a href="mailto:PASTE_CONTACT_EMAIL_HERE" style="color:var(--lime);">PASTE_CONTACT_EMAIL_HERE</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<div class="lang-page" data-lang="ru">
+<header class="site">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>Guruto</div>
+    <nav class="links">
+      <a href="#students-ru">Родителям</a>
+      <a href="#tutors-ru">Тьюторам</a>
+      <a href="#directory-ru">Тьюторы</a>
+      <a href="#safety-ru">Безопасность</a>
+      <a href="#faq-ru">Вопросы</a>
+    </nav>
+    <div class="nav-ctas">
+      <div class="lang-switch">
+        <a href="#" data-lang="en">EN</a>
+        <a href="#" data-lang="ru">RU</a>
+        <a href="#" data-lang="es">ES</a>
+      </div>
+      <a class="btn btn-outline btn-sm" href="#" data-open-modal="student-form">Найти тьютора</a>
+      <a class="btn btn-lime btn-sm" href="#" data-open-modal="tutor-form">Стать тьютором</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home-ru">
+  <div class="blob v1"></div>
+  <div class="blob l1"></div>
+  <div class="blob v2"></div>
+  <div class="wrap inner">
+    <div class="hero-head">
+      <span class="hero-badge">Guruto · Закрытый пилот</span>
+      <h1>Английский, на котором действительно хочется говорить.</h1>
+      <p class="lead">Не очередной урок, где нужно отвечать без единой ошибки. Пространство, где можно говорить, пробовать, ошибаться, смеяться, задавать вопросы — и постепенно чувствовать себя всё увереннее в английском.</p>
+      <p class="lead">Guruto объединяет детей с молодыми тьюторами, которые достаточно близки по возрасту, чтобы понимать их мир, интересы и манеру общения.</p>
+      <p class="hero-tagline">Не обязательно быть экспертом, чтобы учить. <span class="hl">Достаточно быть всего на шаг впереди.</span></p>
+    </div>
+
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="eyebrow">Подросткам и их родителям</span>
+        <h3>Хочу стать тьютором</h3>
+        <p>Практикуй менторство, работай с настоящими учениками и получи свой первый профессиональный опыт.</p>
+        <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Стать тьютором →</a>
+        <span class="age">Возраст 12–18 лет.</span>
+      </div>
+      <div class="path-card">
+        <span class="eyebrow">Родителям и ученикам</span>
+        <h3>Ищу тьютора для ребёнка</h3>
+        <p>Помогите ребёнку найти того, с кем действительно хочется разговаривать.</p>
+        <a class="btn btn-violet" href="#" data-open-modal="student-form">Найти тьютора →</a>
+        <span class="age">Для учеников от 10 до 18 лет.</span>
+      </div>
+    </div>
+
+    <p class="hero-note">Сейчас мы проводим небольшой пилот. После заявки наша команда свяжется с вами лично в WhatsApp.</p>
+  </div>
+</section>
+
+<!-- ДЛЯ УЧЕНИКОВ И РОДИТЕЛЕЙ -->
+<section class="white" id="students-ru">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Ученикам и родителям</span>
+      <h2>Цель — не идеальный английский.<br>Цель — смелость на нём говорить.</h2>
+    </div>
+    <div class="story">
+      <p>Одна из самых ценных вещей, которая может произойти на языковом занятии, удивительно проста: ребёнок начинает говорить.</p>
+      <p>Не потому что он выучил все правила грамматики. Не потому что запомнил каждое слово. А потому что перестал бояться ошибиться.</p>
+      <p>С молодым тьютором ребёнок может говорить о том, что ему действительно важно — об играх, музыке, спорте, школе, фильмах, книгах, друзьях, обо всём, чем он увлекается. Он может запнуться на слове и найти другой способ объяснить мысль. Может задавать вопросы. Может смеяться. Может говорить абсолютно обо всём. Может просто расслабиться и начать говорить.</p>
+      <div class="quote">И иногда, спустя время, что-то меняется: <span>«Я правда могу говорить по-английски»</span>.</div>
+      <p>Это ощущение важно. Потому что уверенность в языке приходит не только от того, что знаешь больше. Она приходит от того, что раз за разом используешь то, что уже знаешь, — не боясь.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ПОЧЕМУ МОЛОДОЙ ТЬЮТОР -->
+<section class="violet" id="why-ru">
+  <div class="wrap two-col">
+    <div>
+      <span class="eyebrow" style="color:var(--black)">Почему молодой тьютор?</span>
+      <h2 style="margin-top:14px;color:var(--white);">Меньше дистанции.<br>Больше разговора.</h2>
+    </div>
+    <div>
+      <p class="lead" style="color:rgba(255,255,255,.85);margin-bottom:16px;">Некоторые вещи легче усваивать от того, кто всего на шаг впереди. Молодой тьютор может понимать игры, в которые играет ребёнок, что он смотрит, что слушает и какие у него вопросы.</p>
+      <p class="lead" style="color:rgba(255,255,255,.85);margin-bottom:16px;">Меньше ощущения «учитель против ученика». Больше — <b style="color:var(--lime)">«давай разберёмся вместе»</b>.</p>
+      <p class="lead" style="color:rgba(255,255,255,.85);">Занятие всё так же может иметь структуру и цель. Но оно не обязано ощущаться ещё одним школьным уроком. Потому что лучшая практика разговора — это разговор, который хочется вести.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ЧТО ПОЛУЧАЕТ УЧЕНИК -->
+<section class="white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Что получает ученик</span>
+      <h2>Пять вещей, которые складываются в одну большую перемену.</h2>
+    </div>
+    <div class="grid-cards cols-5">
+      <div class="card"><span class="num">01</span><h4>Смелость говорить</h4><p>Безопасное пространство, чтобы пробовать английский, не дожидаясь, пока каждая фраза станет идеальной.</p></div>
+      <div class="card"><span class="num">02</span><h4>Более естественный разговор</h4><p>Меньше перевода в голове. Больше слушания, реакции, вопросов и ответов.</p></div>
+      <div class="card"><span class="num">03</span><h4>Уверенность</h4><p>Опыт быть понятым — и осознание, что можешь донести свою мысль.</p></div>
+      <div class="card"><span class="num">04</span><h4>Настоящий контакт</h4><p>Тьютор, с которым могут совпасть интересы, темы для разговора и чувство юмора.</p></div>
+      <div class="card" style="background:var(--lime);"><span class="num" style="color:var(--black);">05</span><h4>«У меня получается»</h4><p style="color:rgba(0,0,0,.65);">Ощущение, которое остаётся после того, как урок закончился.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ПОДРОСТКАМ-ТЬЮТОРАМ -->
+<section class="black" id="tutors-ru">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--lime)">Подросткам-тьюторам</span>
+      <h2 style="color:var(--white);">А что, если того, что ты уже знаешь,<br>достаточно, чтобы кому-то помочь?</h2>
+      <p class="lead" style="color:rgba(255,255,255,.65);margin-top:22px;">Не обязательно ждать совершеннолетия, чтобы получить свой первый настоящий опыт. В Guruto мы помогаем подросткам превращать то, что они уже умеют, в пользу для другого человека. Ты практикуешь менторство — собираешь свои уроки и учишься общаться с настоящим учеником. А когда будешь готов, применяешь эти навыки уже с реальным учеником.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-row">
+        <span class="bignum">01</span>
+        <div><h4>Практикуй менторство</h4><p>Слушать, объяснять, поддерживать, помогать двигаться вперёд — этим навыкам учишься на практике, а не по учебнику.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">02</span>
+        <div><h4>Собери свой урок</h4><p>Преврати то, что знаешь, в понятное и увлекательное занятие — по-своему.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">03</span>
+        <div><h4>Познакомься с настоящим учеником</h4><p>Когда будешь готов, ты переходишь от самостоятельной практики к реальному обучению другого человека.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">04</span>
+        <div><h4>Зарабатывай на своей работе</h4><p>Твои первые платные уроки становятся первым настоящим профессиональным опытом.</p></div>
+      </div>
+    </div>
+
+    <p class="callout-line">Тебе не обязательно знать всё. Достаточно знать чуть больше того, кто <span class="hl">немного раньше тебя в этом пути.</span></p>
+    <p class="callout-line" style="margin-top:20px;">Для тьютора это шанс понять: <span class="hl">«Я правда могу быть кому-то полезен»</span>.</p>
+
+    <div style="margin-top:48px;">
+      <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Стать тьютором →</a>
+    </div>
+  </div>
+</section>
+
+<!-- РОДИТЕЛЯМ ПОДРОСТКОВ-ТЬЮТОРОВ -->
+<section class="off">
+  <div class="wrap parent-box">
+    <div class="art">
+      <div class="blob v1" style="width:280px;height:280px;top:20%;left:10%;"></div>
+      <div class="blob l1" style="width:220px;height:220px;bottom:10%;right:10%;"></div>
+    </div>
+    <div>
+      <span class="eyebrow" style="color:var(--violet)">Родителям подростков-тьюторов</span>
+      <h2 style="margin-top:14px;">Их первый рабочий опыт — а рядом всё ещё есть взрослый, которому доверяют.</h2>
+      <p class="lead" style="margin-top:18px;color:var(--grey);">Мы не считаем, что подростку нужно выбирать между самостоятельностью и поддержкой взрослых. Родители — часть модели с самого начала. Вы помогаете подтвердить личность своего ребёнка, остаётесь в курсе его участия и остаётесь доступным взрослым контактом на протяжении всего процесса.</p>
+      <p class="lead" style="margin-top:14px;font-weight:600;">Цель проста: дать подростку настоящую ответственность, не прося родителей отойти в сторону.</p>
+    </div>
+  </div>
+</section>
+
+<!-- КАК ЭТО РАБОТАЕТ -->
+<section class="white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Как это работает</span>
+      <h2>От «я хочу попробовать» до первого настоящего разговора.</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-row">
+        <span class="tl-num">01</span>
+        <span class="tl-title">Подать заявку</span>
+        <span class="tl-body">Расскажите о себе, своём английском, интересах и доступном времени. Для тьюторов родитель или опекун — часть заявки. Для учеников родители рассказывают нам о возрасте ребёнка, уровне английского, интересах и целях.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">02</span>
+        <span class="tl-title">Мы знакомимся с вами</span>
+        <span class="tl-body">Мы рассматриваем заявки тьюторов и готовим анкеты для одобренных. Для учеников мы подбираем подходящую пару по возрасту, интересам, целям и расписанию.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">03</span>
+        <span class="tl-title">Найдите пару</span>
+        <span class="tl-body">Просмотрите подходящие анкеты тьюторов и выберите того, кто кажется хорошим вариантом.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">04</span>
+        <span class="tl-title">Выберите время</span>
+        <span class="tl-body">Выберите удобное время и отправьте заявку.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">05</span>
+        <span class="tl-title">Мы подтверждаем всё</span>
+        <span class="tl-body">На этапе пилота наша команда лично подтверждает пару, время и дальнейшие шаги в WhatsApp.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">06</span>
+        <span class="tl-title">Проведите разговор</span>
+        <span class="tl-body">Урок проходит онлайн. Цель проста: говорить, пробовать, учиться — и становиться немного увереннее.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ЗНАКОМЬТЕСЬ С ТЬЮТОРАМИ -->
+<section class="off" id="directory-ru">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Знакомьтесь с тьюторами</span>
+      <h2>Найдите того, с кем ребёнку действительно захочется говорить.</h2>
+      <p class="lead" style="margin-top:16px;color:var(--grey);">Каждая анкета тьютора немного рассказывает о человеке по ту сторону экрана.</p>
+    </div>
+
+    <div class="tutor-grid">
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--violet);">
+          <div class="blob l1" style="width:200px;height:200px;top:-40px;right:-40px;opacity:.6;"></div>
+          <span style="color:var(--white);">M</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Mia</h4><span class="level">Носитель языка</span></div>
+          <p class="about">«Обожаю читать фэнтези и учусь программировать. Уже два года помогаю двоюродной сестрёнке с английским домашним заданием — и это правда весело».</p>
+          <div class="tag-row">
+            <span class="tag help">Разговорный английский</span>
+            <span class="tag help">Школьный английский</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Книги</span>
+            <span class="tag">Программирование</span>
+            <span class="tag">Творчество</span>
+          </div>
+          <div class="avail"><b>Пн · Ср · Пт</b> — День, вечер · Восточное время США (ET)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Отправить заявку этому тьютору</a>
+        </div>
+      </div>
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--lime);">
+          <div class="blob v1" style="width:200px;height:200px;bottom:-50px;left:-30px;opacity:.55;"></div>
+          <span>J</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Jordan</h4><span class="level">Носитель языка</span></div>
+          <p class="about">«Футбол, видеоигры и ужасные каламбуры. Я терпеливый и обещаю не оценивать твой акцент — у меня самого он довольно странный».</p>
+          <div class="tag-row">
+            <span class="tag help">Разговорный английский</span>
+            <span class="tag help">Английский для путешествий</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Спорт</span>
+            <span class="tag">Игры</span>
+            <span class="tag">Музыка</span>
+          </div>
+          <div class="avail"><b>Вт · Чт · Сб</b> — Утро, день · Центральное время США (CT)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Отправить заявку этому тьютору</a>
+        </div>
+      </div>
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--black);">
+          <div class="blob v1" style="width:180px;height:180px;top:-30px;left:20%;opacity:.6;"></div>
+          <div class="blob l1" style="width:160px;height:160px;bottom:-40px;right:0;opacity:.5;"></div>
+          <span style="color:var(--white);">S</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Sofia</h4><span class="level">Свободное владение</span></div>
+          <p class="about">«Я часто переезжала в детстве, поэтому знаю, каково это — не быть уверенной в языке. Давай просто поговорим — о чём угодно».</p>
+          <div class="tag-row">
+            <span class="tag help">Разговорный английский</span>
+            <span class="tag help">Подготовка к экзаменам</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Кино и сериалы</span>
+            <span class="tag">Путешествия</span>
+            <span class="tag">Животные</span>
+          </div>
+          <div class="avail"><b>Выходные</b> — Утро, вечер · Коста-Рика / Центральное время США (CT)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Отправить заявку этому тьютору</a>
+        </div>
+      </div>
+
+    </div>
+    <p class="directory-note">Анкеты тьюторов, показанные здесь, прошли проверку в рамках пилота. Эти три — примеры-заглушки: реальные одобренные анкеты будут появляться здесь по мере добавления.</p>
+  </div>
+</section>
+
+<!-- БЕЗОПАСНОСТЬ И ДОВЕРИЕ -->
+<section class="black" id="safety-ru">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--lime)">Безопасность и доверие</span>
+      <h2 style="color:var(--white);">Молодые люди получают настоящую ответственность.<br>Взрослые остаются рядом.</h2>
+      <p class="lead" style="margin-top:18px;color:rgba(255,255,255,.65);">Мы не просим семьи выбирать между возможностью и безопасностью. Поэтому участие взрослых заложено в саму модель.</p>
+    </div>
+
+    <div class="safety-grid">
+      <div class="safety-card">
+        <div class="icon">✓</div>
+        <h4>Родители проверены — с обеих сторон</h4>
+        <p>Родитель или опекун каждого молодого тьютора и родитель или опекун каждого ученика участвуют в процессе ещё до начала занятий и остаются известным взрослым контактом.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">●</div>
+        <h4>Уроки записываются</h4>
+        <p>Занятия записываются для прозрачности и подотчётности, доступ к записям ограничен.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">✎</div>
+        <h4>Переписка модерируется</h4>
+        <p>Общение вокруг уроков идёт по модерируемому процессу с понятными правилами взаимодействия тьюторов и учеников.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">⇄</div>
+        <h4>Пары подбираются внимательно</h4>
+        <p>При подборе пары тьютор-ученик мы учитываем возраст, зрелость и разумную разницу в возрасте.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">🔒</div>
+        <h4>Ваши данные защищены</h4>
+        <p>Каждая заявка включает явное согласие, а что и зачем мы собираем — описано в нашей Политике конфиденциальности.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">i</div>
+        <h4>Родители остаются в курсе</h4>
+        <p>Родители тьюторов остаются вовлечёнными, а родители учеников понимают, как устроен процесс.</p>
+      </div>
+    </div>
+
+    <p class="principle">Наш принцип прост: <b>подростки</b> должны иметь возможность сделать первые шаги в настоящей работе. <b>Дети</b> должны иметь пространство, где они становятся увереннее в английском. А <b>родители</b> должны знать, кто в этом участвует.</p>
+  </div>
+</section>
+
+<!-- ЭТО ПИЛОТ -->
+<section class="violet final-cta">
+  <div class="blob l1" style="width:360px;height:360px;top:-100px;right:-80px;opacity:.35;filter:blur(100px);"></div>
+  <div class="wrap pilot-box">
+    <span class="eyebrow" style="color:var(--black)">Это пилот</span>
+    <h2 style="margin-top:14px;color:var(--white);">Мы строим это вместе с первыми семьями.</h2>
+    <p class="lead" style="margin-top:16px;color:rgba(255,255,255,.85);">Guruto сейчас — небольшой пилот. Некоторые этапы намеренно остаются личными и ручными.</p>
+    <ul class="pilot-list">
+      <li>Мы сами рассматриваем заявки.</li>
+      <li>Мы помогаем семьям найти подходящую пару.</li>
+      <li>Мы лично согласовываем первые шаги.</li>
+    </ul>
+    <p class="lead" style="color:rgba(255,255,255,.85);">Нет смысла притворяться, что мы уже огромная автоматизированная платформа. Мы аккуратно выстраиваем модель — вместе с первыми тьюторами, учениками и родителями.</p>
+
+    <p style="margin-top:30px;font-weight:600;color:var(--white);">Хотите быть частью этого?</p>
+    <div class="pilot-ctas">
+      <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Подать заявку как тьютор</a>
+      <a class="btn btn-black" href="#" data-open-modal="student-form">Найти тьютора</a>
+    </div>
+    <p class="pilot-note">Мест в пилоте сейчас ограниченное количество.</p>
+  </div>
+</section>
+
+
+
+<div class="modal-backdrop" data-modal="tutor-form-ru">
+  <div class="modal-box wide">
+    <button class="modal-close" type="button" aria-label="Закрыть">&#10005;</button>
+    <div class="gq" data-flow="tutor" data-lang="ru" data-title="Стать тьютором." data-eyebrow="Заявка — тьютор"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" data-modal="student-form-ru">
+  <div class="modal-box wide">
+    <button class="modal-close" type="button" aria-label="Закрыть">&#10005;</button>
+    <div class="gq" data-flow="student" data-lang="ru" data-title="Найти тьютора." data-eyebrow="Заявка — ученик"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" data-modal="policy-ru">
+  <div class="modal-box">
+    <button class="modal-close" type="button" aria-label="Закрыть">&#10005;</button>
+    <h3>Политика конфиденциальности — пилотная программа</h3>
+    <div class="modal-meta">Рабочий черновик · Не является юридической консультацией · Замените плейсхолдеры [в скобках] перед публикацией</div>
+    <div class="warn">Это черновик, написанный простым языком, честно и практично для нашего закрытого пилота. Он не заменяет проверку юристом, знакомым с законодательством о защите данных детей. Мы проверим его перед масштабированием за пределы пилота.</div>
+    
+    <h4>Кто мы</h4>
+    <p>Guruto («мы») проводит небольшой закрытый пилот, который объединяет подростков-тьюторов (12–18 лет) с детьми и подростками (от 10 лет) для практики разговорного английского. Эта политика объясняет, что мы собираем через анкеты и сайт, зачем, и как это используется. Мы постарались писать простым языком, поскольку большинство участников пилота — дети: спрашивайте нас, если что-то непонятно.</p>
+
+    <h4>Что мы собираем</h4>
+    <p><b>От заявителя-тьютора и его родителя/опекуна:</b> имя, возраст, уровень английского, короткий рассказ о себе, увлечения, фото и доступное время; по желанию — ссылку на короткое видео; имя и контакты родителя; подтверждение согласия родителя на участие.</p>
+    <p><b>От заявителя-ученика и его родителя/опекуна:</b> имя ребёнка, возраст, уровень английского, цели, интересы и доступное время; имя и контакты родителя; подтверждение согласия родителя на участие.</p>
+    <p><b>Во время уроков:</b> видео/аудиозаписи и сообщения в модерируемом канале связи.</p>
+    <p>Мы запрашиваем только то, что нужно для безопасного подбора пары и организации урока.</p>
+
+    <h4>Зачем мы это собираем</h4>
+    <ul>
+      <li>Чтобы рассматривать и одобрять заявки тьюторов</li>
+      <li>Чтобы подбирать пары тьютор-ученик по возрасту, уровню, интересам и расписанию</li>
+      <li>Чтобы публиковать имя, фото, рассказ о себе и доступность одобренного тьютора в публичной витрине — но никогда не публиковать возраст, фамилию или контакты</li>
+      <li>Чтобы семья могла отправить запрос конкретному тьютору на конкретное время</li>
+      <li>Чтобы подтверждать пары и дальнейшие шаги — сейчас это делается лично, через WhatsApp</li>
+      <li>Чтобы просматривать записи ради безопасности и качества</li>
+      <li>Чтобы связываться с родителями/опекунами по поводу участия</li>
+    </ul>
+    <p>Мы не используем эту информацию для рекламы и не продаём её.</p>
+
+    <h4>Кто может это увидеть</h4>
+    <p>Наша небольшая команда пилота; подобранная семья — в объёме, нужном для организации урока. Записи просматривает только команда безопасности, и они никогда не публикуются. Если мы узнаём о чём-то, что угрожает безопасности ребёнка, мы можем сообщить об этом соответствующим органам — это для нас важнее сохранения конфиденциальности.</p>
+
+    <h4>Как долго мы храним данные</h4>
+    <p>Записи: хранятся [30] дней, затем удаляются. Заявки: хранятся, пока пилот активен, или до вашей просьбы их удалить.</p>
+
+    <h4>Конфиденциальность детей</h4>
+    <p>Поскольку многие участники платформы младше 13 лет, мы собираем информацию о ребёнке только с согласия родителя; не запрашиваем больше, чем нужно; родитель может в любой момент просмотреть, исправить или удалить информацию о своём ребёнке; и мы никогда не используем данные ребёнка для таргетированной рекламы или обучения ИИ без отдельного повторного запроса согласия.</p>
+
+    <h4>Ваши права</h4>
+    <p>Вы — или, если речь о ребёнке, его родитель/опекун — можете в любой момент попросить нас показать, исправить или удалить вашу информацию, либо отозвать согласие. На этапе пилота просто напишите нам — отдельного портала пока нет.</p>
+
+    <h4>Безопасность</h4>
+    <p>Мы принимаем разумные меры, чтобы ограничить доступ к этой информации внутри команды. Как небольшой пилот, наши системы проще, чем у крупной компании, — мы предпочитаем быть честными об этом, а не переобещать.</p>
+
+    <h4>Изменения</h4>
+    <p>Это пилот, поэтому политика может меняться по мере того, как мы учимся. Если изменение повлияет на то, что мы делаем с вашей информацией, мы сообщим вам напрямую.</p>
+
+    <h4>Контакты</h4>
+    <p>Вопросы и запросы: [email/контакт]</p>
+  
+  </div>
+</div>
+
+<!-- ВОПРОСЫ -->
+<section class="white" id="faq-ru">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Вопросы</span>
+      <h2>Вопросы, на которые лучше ответить сразу.</h2>
+    </div>
+    <div class="faq-list">
+      <details open>
+        <summary>С каким возрастом вы работаете?</summary>
+        <p class="a">Тьюторы — от 12 до 18 лет. Ученики — от 10 до 18 лет.</p>
+      </details>
+      <details>
+        <summary>Это обычный сервис репетиторов по английскому?</summary>
+        <p class="a">Не совсем. Главная цель пилота — дать детям содержательную разговорную практику английского и помочь им увереннее использовать язык. У занятий может быть структура и тема, но мы не обещаем традиционную программу с упором на грамматику.</p>
+      </details>
+      <details>
+        <summary>Улучшится ли грамматика моего ребёнка?</summary>
+        <p class="a">Ребёнок может естественным образом усваивать грамматику через разговор и практику, но обучение грамматике — не главное обещание пилота. Наш приоритет — помочь детям свободнее и увереннее пользоваться английским.</p>
+      </details>
+      <details>
+        <summary>Почему обучать моего ребёнка должен подросток?</summary>
+        <p class="a">Потому что близость в возрасте может облегчать общение. Молодой тьютор может понимать интересы, отсылки и манеру общения ученика — и это создаёт более естественный разговор.</p>
+      </details>
+      <details>
+        <summary>Это безопасно?</summary>
+        <p class="a">Родители с обеих сторон участвуют в процессе, у молодых тьюторов есть проверенный родитель или опекун, уроки записываются, переписка модерируется, а при подборе пары учитывается возраст.</p>
+      </details>
+      <details>
+        <summary>Как отбираются тьюторы?</summary>
+        <p class="a">Мы рассматриваем каждую заявку, включая возраст, уровень английского, опыт, интересы и доступное время.</p>
+      </details>
+      <details>
+        <summary>Что если ребёнку не подойдёт тьютор?</summary>
+        <p class="a">Скажите нам. Хорошая пара важнее, чем удержание неподходящей. На этапе пилота наша команда поможет найти вариант получше.</p>
+      </details>
+      <details>
+        <summary>Как происходит оплата?</summary>
+        <p class="a">Условия оплаты объясняются и согласовываются с семьёй до первого урока. Сейчас мы тестируем модель, поэтому фиксированные цены пока не публикуем.</p>
+      </details>
+      <details>
+        <summary>Можем ли мы присоединиться, если мы не в США?</summary>
+        <p class="a">Мы начинаем с небольшого международного пилота. Напишите нам, где вы находитесь, и мы скажем, можем ли сейчас поддержать вашу семью.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">Guruto</div>
+        <p style="margin-top:8px;max-width:280px;">Небольшой закрытый пилот, который объединяет молодых тьюторов с учениками, которые хотят говорить увереннее.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#students-ru">Родителям</a>
+        <a href="#tutors-ru">Тьюторам</a>
+        <a href="#directory-ru">Тьюторы</a>
+        <a href="#safety-ru">Безопасность и доверие</a>
+        <a href="#faq-ru">Вопросы</a>
+        <a href="#" class="open-policy-link" data-open-modal="policy">Политика конфиденциальности</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© Guruto, [Год]. Все права защищены.</span>
+      <span>Вопросы? <a href="mailto:PASTE_CONTACT_EMAIL_HERE" style="color:var(--lime);">PASTE_CONTACT_EMAIL_HERE</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<div class="lang-page" data-lang="es">
+<header class="site">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>Guruto</div>
+    <nav class="links">
+      <a href="#students-es">Para padres</a>
+      <a href="#tutors-es">Para tutores</a>
+      <a href="#directory-es">Tutores</a>
+      <a href="#safety-es">Seguridad</a>
+      <a href="#faq-es">Preguntas</a>
+    </nav>
+    <div class="nav-ctas">
+      <div class="lang-switch">
+        <a href="#" data-lang="en">EN</a>
+        <a href="#" data-lang="ru">RU</a>
+        <a href="#" data-lang="es">ES</a>
+      </div>
+      <a class="btn btn-outline btn-sm" href="#" data-open-modal="student-form">Buscar un tutor</a>
+      <a class="btn btn-lime btn-sm" href="#" data-open-modal="tutor-form">Ser tutor</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home-es">
+  <div class="blob v1"></div>
+  <div class="blob l1"></div>
+  <div class="blob v2"></div>
+  <div class="wrap inner">
+    <div class="hero-head">
+      <span class="hero-badge">Guruto · Piloto Cerrado</span>
+      <h1>El inglés que de verdad quieres hablar.</h1>
+      <p class="lead">No es otra clase donde hay que acertar todo. Es un espacio donde se puede hablar, intentar, equivocarse, reír, hacer preguntas — y ganar confianza poco a poco al hablar inglés.</p>
+      <p class="lead">Guruto conecta a niños con tutores jóvenes lo bastante cercanos en edad como para entender su mundo, sus intereses y su forma de comunicarse.</p>
+      <p class="hero-tagline">No hace falta ser un experto para enseñar. <span class="hl">Solo hace falta ir un paso por delante.</span></p>
+    </div>
+
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="eyebrow">Para adolescentes y sus padres</span>
+        <h3>Quiero ser tutor</h3>
+        <p>Practica ser mentor, trabaja con estudiantes reales y construye tu primera experiencia profesional.</p>
+        <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Ser tutor →</a>
+        <span class="age">De 12 a 18 años.</span>
+      </div>
+      <div class="path-card">
+        <span class="eyebrow">Para padres y estudiantes</span>
+        <h3>Busco un tutor para mi hijo/a</h3>
+        <p>Ayuda al estudiante a encontrar a alguien con quien realmente pueda hablar.</p>
+        <a class="btn btn-violet" href="#" data-open-modal="student-form">Buscar un tutor →</a>
+        <span class="age">Para estudiantes de 10 a 18 años.</span>
+      </div>
+    </div>
+
+    <p class="hero-note">Actualmente estamos en un piloto pequeño. Después de aplicar, nuestro equipo te contactará personalmente por WhatsApp.</p>
+  </div>
+</section>
+
+<!-- PARA ESTUDIANTES Y PADRES -->
+<section class="white" id="students-es">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Para estudiantes y padres</span>
+      <h2>El objetivo no es un inglés perfecto.<br>Es el valor para usarlo.</h2>
+    </div>
+    <div class="story">
+      <p>Una de las cosas más valiosas que pueden pasar en una clase de idiomas es sorprendentemente simple: un niño empieza a hablar.</p>
+      <p>No porque se sepa todas las reglas de gramática. No porque haya memorizado cada palabra. Porque deja de tener miedo a equivocarse.</p>
+      <p>Con un tutor joven, el estudiante puede hablar de lo que realmente le importa — juegos, música, deportes, la escuela, películas, libros, amigos, lo que sea que le apasione. Puede trabarse con una palabra y encontrar otra forma de explicarla. Puede hacer preguntas. Puede reírse. Puede hablar de absolutamente todo. Puede simplemente soltarse y empezar a hablar.</p>
+      <div class="quote">Y a veces, con el tiempo, algo cambia: <span>«De verdad puedo hablar inglés»</span>.</div>
+      <p>Ese sentimiento importa. Porque la confianza en un idioma no viene solo de saber más. Viene de usar una y otra vez lo que ya sabes, sin miedo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POR QUÉ UN TUTOR JOVEN -->
+<section class="violet" id="why-es">
+  <div class="wrap two-col">
+    <div>
+      <span class="eyebrow" style="color:var(--black)">¿Por qué un tutor joven?</span>
+      <h2 style="margin-top:14px;color:var(--white);">Menos distancia.<br>Más conversación.</h2>
+    </div>
+    <div>
+      <p class="lead" style="color:rgba(255,255,255,.85);margin-bottom:16px;">Hay cosas que son más fáciles de aprender de alguien que va apenas un paso adelante. Un tutor joven puede entender los juegos a los que juega el estudiante, lo que ve, lo que escucha y las preguntas que tiene.</p>
+      <p class="lead" style="color:rgba(255,255,255,.85);margin-bottom:16px;">Hay menos sensación de «profesor contra estudiante». Más bien: <b style="color:var(--lime)">«vamos a resolverlo juntos»</b>.</p>
+      <p class="lead" style="color:rgba(255,255,255,.85);">La clase puede seguir teniendo estructura y propósito. Pero no tiene por qué sentirse como otra hora de escuela. Porque la mejor práctica de conversación es una conversación que uno quiere tener.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LO QUE GANA EL ESTUDIANTE -->
+<section class="white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Lo que gana el estudiante</span>
+      <h2>Cinco cosas que suman un gran cambio.</h2>
+    </div>
+    <div class="grid-cards cols-5">
+      <div class="card"><span class="num">01</span><h4>Valor para hablar</h4><p>Un espacio seguro para probar el inglés sin esperar a que cada frase sea perfecta.</p></div>
+      <div class="card"><span class="num">02</span><h4>Una conversación más natural</h4><p>Menos traducir en la cabeza. Más escuchar, reaccionar, preguntar y responder.</p></div>
+      <div class="card"><span class="num">03</span><h4>Confianza</h4><p>La experiencia de ser entendido — y darse cuenta de que puede hacerse entender.</p></div>
+      <div class="card"><span class="num">04</span><h4>Una conexión real</h4><p>Un tutor con quien pueden coincidir intereses, referencias y sentido del humor.</p></div>
+      <div class="card" style="background:var(--lime);"><span class="num" style="color:var(--black);">05</span><h4>«Sí puedo»</h4><p style="color:rgba(0,0,0,.65);">La sensación que queda después de terminar la clase.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA TUTORES ADOLESCENTES -->
+<section class="black" id="tutors-es">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--lime)">Para tutores adolescentes</span>
+      <h2 style="color:var(--white);">¿Y si lo que ya sabes<br>ya es suficiente para ayudar a alguien?</h2>
+      <p class="lead" style="color:rgba(255,255,255,.65);margin-top:22px;">No hace falta esperar a ser adulto para tener tu primera experiencia real. En Guruto ayudamos a los adolescentes a convertir algo que ya saben en algo útil para otra persona. Practicas ser mentor — dando forma a tus propias clases y aprendiendo a comunicarte con un estudiante real. Y cuando estés listo, pones esas habilidades a trabajar con un estudiante real.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-row">
+        <span class="bignum">01</span>
+        <div><h4>Practica ser mentor</h4><p>Escuchar, explicar, animar, ayudar a alguien a avanzar — habilidades que se construyen haciéndolas, no leyendo un manual.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">02</span>
+        <div><h4>Da forma a tu propia clase</h4><p>Convierte lo que sabes en algo claro y atractivo, a tu manera.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">03</span>
+        <div><h4>Conoce a un estudiante real</h4><p>Cuando estés listo, pasas de practicar por tu cuenta a enseñarle de verdad a alguien.</p></div>
+      </div>
+      <div class="step-row">
+        <span class="bignum">04</span>
+        <div><h4>Gana con tu trabajo</h4><p>Tus primeras clases pagadas se convierten en tu primera experiencia profesional real.</p></div>
+      </div>
+    </div>
+
+    <p class="callout-line">No se supone que lo sepas todo. Solo necesitas saber un poco más que alguien que va <span class="hl">un poco antes en su camino.</span></p>
+    <p class="callout-line" style="margin-top:20px;">Para el tutor, es una oportunidad de descubrir: <span class="hl">«De verdad puedo serle útil a alguien»</span>.</p>
+
+    <div style="margin-top:48px;">
+      <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Ser tutor →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PARA PADRES DE TUTORES ADOLESCENTES -->
+<section class="off">
+  <div class="wrap parent-box">
+    <div class="art">
+      <div class="blob v1" style="width:280px;height:280px;top:20%;left:10%;"></div>
+      <div class="blob l1" style="width:220px;height:220px;bottom:10%;right:10%;"></div>
+    </div>
+    <div>
+      <span class="eyebrow" style="color:var(--violet)">Para padres de tutores adolescentes</span>
+      <h2 style="margin-top:14px;">Su primera experiencia laboral — con un adulto de confianza que sigue presente.</h2>
+      <p class="lead" style="margin-top:18px;color:var(--grey);">No creemos que un adolescente tenga que elegir entre independencia y apoyo adulto. Los padres son parte del modelo desde el principio. Ayudas a verificar la identidad de tu hijo/a, te mantienes informado/a sobre su participación y sigues siendo un contacto adulto disponible durante el proceso.</p>
+      <p class="lead" style="margin-top:14px;font-weight:600;">El objetivo es simple: darle a un adolescente responsabilidad real sin pedirles a los padres que se hagan a un lado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section class="white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Cómo funciona</span>
+      <h2>De «me gustaría intentarlo» a la primera conversación real.</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-row">
+        <span class="tl-num">01</span>
+        <span class="tl-title">Aplica</span>
+        <span class="tl-body">Cuéntanos sobre ti, tu inglés, tus intereses y tu disponibilidad. Para tutores, un padre o tutor legal es parte de la solicitud. Para estudiantes, los padres nos cuentan sobre la edad del estudiante, su nivel de inglés, intereses y objetivos.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">02</span>
+        <span class="tl-title">Te conocemos</span>
+        <span class="tl-body">Revisamos las solicitudes de los tutores y preparamos perfiles para los aprobados. Para los estudiantes, buscamos una buena pareja según edad, intereses, objetivos y disponibilidad.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">03</span>
+        <span class="tl-title">Encuentra una pareja</span>
+        <span class="tl-body">Explora los perfiles de tutores disponibles y elige a alguien que parezca una buena opción.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">04</span>
+        <span class="tl-title">Elige un horario</span>
+        <span class="tl-body">Selecciona un horario disponible y envía una solicitud.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">05</span>
+        <span class="tl-title">Confirmamos todo</span>
+        <span class="tl-body">Durante el piloto, nuestro equipo confirma personalmente la pareja, el horario y los siguientes pasos por WhatsApp.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-num">06</span>
+        <span class="tl-title">Ten la conversación</span>
+        <span class="tl-body">La clase ocurre en línea. El objetivo es simple: hablar, intentar, aprender — y ganar un poco más de confianza.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONOCE A LOS TUTORES -->
+<section class="off" id="directory-es">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Conoce a los tutores</span>
+      <h2>Encuentra a alguien con quien el estudiante de verdad quiera hablar.</h2>
+      <p class="lead" style="margin-top:16px;color:var(--grey);">Cada perfil de tutor cuenta un poco sobre la persona detrás de la pantalla.</p>
+    </div>
+
+    <div class="tutor-grid">
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--violet);">
+          <div class="blob l1" style="width:200px;height:200px;top:-40px;right:-40px;opacity:.6;"></div>
+          <span style="color:var(--white);">M</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Mia</h4><span class="level">Hablante nativo</span></div>
+          <p class="about">«Me encanta leer fantasía y estoy aprendiendo a programar. Llevo dos años ayudando a mi primita con la tarea de inglés y, la verdad, es muy divertido».</p>
+          <div class="tag-row">
+            <span class="tag help">Conversación</span>
+            <span class="tag help">Inglés escolar</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Libros</span>
+            <span class="tag">Programación</span>
+            <span class="tag">Arte</span>
+          </div>
+          <div class="avail"><b>Lun · Mié · Vie</b> — Tarde, noche · Hora del Este de EE. UU. (ET)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Solicitar a este tutor</a>
+        </div>
+      </div>
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--lime);">
+          <div class="blob v1" style="width:200px;height:200px;bottom:-50px;left:-30px;opacity:.55;"></div>
+          <span>J</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Jordan</h4><span class="level">Hablante nativo</span></div>
+          <p class="about">«Fútbol, videojuegos y juegos de palabras terribles. Soy paciente y prometo no juzgar tu acento — el mío también es bastante raro».</p>
+          <div class="tag-row">
+            <span class="tag help">Conversación</span>
+            <span class="tag help">Inglés para viajar</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Deportes</span>
+            <span class="tag">Videojuegos</span>
+            <span class="tag">Música</span>
+          </div>
+          <div class="avail"><b>Mar · Jue · Sáb</b> — Mañana, tarde · Hora Central de EE. UU. (CT)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Solicitar a este tutor</a>
+        </div>
+      </div>
+
+      <div class="tutor-card">
+        <div class="tutor-photo" style="background:var(--black);">
+          <div class="blob v1" style="width:180px;height:180px;top:-30px;left:20%;opacity:.6;"></div>
+          <div class="blob l1" style="width:160px;height:160px;bottom:-40px;right:0;opacity:.5;"></div>
+          <span style="color:var(--white);">S</span>
+        </div>
+        <div class="tutor-body">
+          <div class="name-row"><h4>Sofia</h4><span class="level">Dominio fluido</span></div>
+          <p class="about">«Me mudé mucho de niña, así que entiendo lo que es sentirse insegura con un idioma. Simplemente hablemos — de lo que sea».</p>
+          <div class="tag-row">
+            <span class="tag help">Conversación</span>
+            <span class="tag help">Preparación de exámenes</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Películas y series</span>
+            <span class="tag">Viajes</span>
+            <span class="tag">Animales</span>
+          </div>
+          <div class="avail"><b>Fines de semana</b> — Mañana, noche · Costa Rica / Hora Central de EE. UU. (CT)</div>
+          <a class="btn btn-black" href="#" data-open-modal="student-form">Solicitar a este tutor</a>
+        </div>
+      </div>
+
+    </div>
+    <p class="directory-note">Los perfiles de tutores mostrados aquí han sido revisados como parte de nuestro piloto. Estos tres son ejemplos de muestra — los perfiles reales aprobados irán apareciendo aquí a medida que se añadan.</p>
+  </div>
+</section>
+
+<!-- SEGURIDAD Y CONFIANZA -->
+<section class="black" id="safety-es">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--lime)">Seguridad y confianza</span>
+      <h2 style="color:var(--white);">Los jóvenes reciben responsabilidad real.<br>Los adultos permanecen cerca.</h2>
+      <p class="lead" style="margin-top:18px;color:rgba(255,255,255,.65);">No les pedimos a las familias que elijan entre oportunidad y seguridad. Por eso la participación de los adultos está integrada en el modelo.</p>
+    </div>
+
+    <div class="safety-grid">
+      <div class="safety-card">
+        <div class="icon">✓</div>
+        <h4>Los padres están verificados — de ambos lados</h4>
+        <p>Un padre o tutor legal de cada tutor joven, y un padre o tutor legal de cada estudiante, participan antes de que empiecen las clases y siguen siendo un contacto adulto conocido.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">●</div>
+        <h4>Las clases se graban</h4>
+        <p>Las sesiones se graban por transparencia y responsabilidad, y el acceso a las grabaciones es limitado.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">✎</div>
+        <h4>La comunicación es moderada</h4>
+        <p>La comunicación en torno a las clases sigue un proceso moderado con reglas claras sobre cómo interactúan tutores y estudiantes.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">⇄</div>
+        <h4>Las parejas se eligen con cuidado</h4>
+        <p>Consideramos la edad, la madurez y una diferencia de edad razonable al emparejar tutores y estudiantes.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">🔒</div>
+        <h4>Tu información está protegida</h4>
+        <p>Cada solicitud incluye un consentimiento claro, y explicamos qué recopilamos y por qué en nuestra Política de Privacidad.</p>
+      </div>
+      <div class="safety-card">
+        <div class="icon">i</div>
+        <h4>Los padres se mantienen informados</h4>
+        <p>Los padres de los tutores siguen involucrados, y los padres de los estudiantes entienden cómo funciona el proceso.</p>
+      </div>
+    </div>
+
+    <p class="principle">Nuestro principio es simple: los <b>adolescentes</b> deben poder dar sus primeros pasos en un trabajo real. Los <b>niños</b> deben tener un espacio donde puedan ganar confianza al hablar inglés. Y los <b>padres</b> deben saber quién está involucrado.</p>
+  </div>
+</section>
+
+<!-- ESTO ES UN PILOTO -->
+<section class="violet final-cta">
+  <div class="blob l1" style="width:360px;height:360px;top:-100px;right:-80px;opacity:.35;filter:blur(100px);"></div>
+  <div class="wrap pilot-box">
+    <span class="eyebrow" style="color:var(--black)">Esto es un piloto</span>
+    <h2 style="margin-top:14px;color:var(--white);">Lo estamos construyendo con las primeras familias.</h2>
+    <p class="lead" style="margin-top:16px;color:rgba(255,255,255,.85);">Guruto es, por ahora, un piloto pequeño. Algunas partes son intencionalmente personales y manuales.</p>
+    <ul class="pilot-list">
+      <li>Revisamos las solicitudes nosotros mismos.</li>
+      <li>Ayudamos a las familias a encontrar una buena pareja.</li>
+      <li>Coordinamos los primeros pasos directamente.</li>
+    </ul>
+    <p class="lead" style="color:rgba(255,255,255,.85);">No hace falta fingir que ya somos una plataforma automatizada gigante. Estamos construyendo el modelo con cuidado — junto a los primeros tutores, estudiantes y padres.</p>
+
+    <p style="margin-top:30px;font-weight:600;color:var(--white);">¿Quieres ser parte de esto?</p>
+    <div class="pilot-ctas">
+      <a class="btn btn-lime" href="#" data-open-modal="tutor-form">Aplicar como tutor</a>
+      <a class="btn btn-black" href="#" data-open-modal="student-form">Buscar un tutor</a>
+    </div>
+    <p class="pilot-note">Actualmente los lugares en el piloto son limitados.</p>
+  </div>
+</section>
+
+
+
+<div class="modal-backdrop" data-modal="tutor-form-es">
+  <div class="modal-box wide">
+    <button class="modal-close" type="button" aria-label="Cerrar">&#10005;</button>
+    <div class="gq" data-flow="tutor" data-lang="es" data-title="Hazte tutor." data-eyebrow="Solicitud — Tutor"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" data-modal="student-form-es">
+  <div class="modal-box wide">
+    <button class="modal-close" type="button" aria-label="Cerrar">&#10005;</button>
+    <div class="gq" data-flow="student" data-lang="es" data-title="Encontrar un tutor." data-eyebrow="Solicitud — Estudiante"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" data-modal="policy-es">
+  <div class="modal-box">
+    <button class="modal-close" type="button" aria-label="Cerrar">&#10005;</button>
+    <h3>Política de Privacidad — programa piloto</h3>
+    <div class="modal-meta">Borrador de trabajo · No es asesoría legal definitiva · Reemplaza los marcadores [entre corchetes] antes de publicar</div>
+    <div class="warn">Este es un borrador escrito en lenguaje sencillo, honesto y práctico para nuestro piloto cerrado. No sustituye la revisión de un abogado familiarizado con las leyes de privacidad infantil. Lo revisaremos antes de escalar más allá de este piloto.</div>
+    
+    <h4>Quiénes somos</h4>
+    <p>Guruto («nosotros») dirige un piloto pequeño y cerrado que conecta a tutores adolescentes (12–18 años) con niños y adolescentes (10 años en adelante) para practicar conversación en inglés. Esta política explica qué recopilamos a través de nuestros formularios y el sitio web, por qué, y cómo se maneja. Intentamos escribirla en lenguaje sencillo, ya que la mayoría de las personas que usan este piloto son niños — pregúntanos si algo no queda claro.</p>
+
+    <h4>Qué recopilamos</h4>
+    <p><b>De un/a solicitante tutor/a y su padre/madre/tutor legal:</b> nombre, edad, nivel de inglés, una breve biografía, aficiones, una foto y disponibilidad; opcionalmente, un video corto de presentación; el nombre y los datos de contacto del padre/madre; la confirmación de que un padre/madre consiente la participación.</p>
+    <p><b>De un/a solicitante estudiante y su padre/madre/tutor legal:</b> el nombre del niño/a, edad, nivel de inglés, objetivos, intereses y disponibilidad; el nombre y los datos de contacto del padre/madre; la confirmación del consentimiento.</p>
+    <p><b>Durante las clases:</b> grabaciones de video/audio, y mensajes enviados a través de nuestro canal de comunicación moderado.</p>
+    <p>Solo pedimos lo que necesitamos para lograr un emparejamiento seguro y coordinar una clase.</p>
+
+    <h4>Por qué lo recopilamos</h4>
+    <ul>
+      <li>Para revisar y aprobar las solicitudes de tutores</li>
+      <li>Para emparejar tutores y estudiantes según edad, nivel, intereses y disponibilidad</li>
+      <li>Para publicar el nombre, la foto, la biografía y la disponibilidad de un tutor aprobado en nuestro directorio público — nunca su edad, apellido o información de contacto</li>
+      <li>Para que una familia pueda solicitar a un tutor y horario específicos</li>
+      <li>Para confirmar parejas y siguientes pasos, algo que actualmente hacemos personalmente por WhatsApp</li>
+      <li>Para revisar grabaciones por seguridad y calidad</li>
+      <li>Para contactar a los padres/tutores legales sobre la participación</li>
+    </ul>
+    <p>No usamos esta información para publicidad, ni la vendemos.</p>
+
+    <h4>Quién puede verla</h4>
+    <p>Nuestro pequeño equipo del piloto; la familia emparejada, en la medida necesaria para coordinar una clase. Las grabaciones solo son revisadas por nuestro equipo de seguridad y nunca se comparten públicamente. Si llegamos a saber de algo que ponga en riesgo la seguridad de un niño, podemos reportarlo a las autoridades correspondientes — esto nos importa más que mantener la información en privado.</p>
+
+    <h4>Cuánto tiempo la conservamos</h4>
+    <p>Grabaciones: se conservan [30] días y luego se eliminan. Solicitudes: se conservan mientras el piloto esté activo, o hasta que nos pidas eliminarlas.</p>
+
+    <h4>Privacidad de los niños</h4>
+    <p>Como muchas de las personas en esta plataforma tienen menos de 13 años, recopilamos información de un niño/a solo con el consentimiento de un padre/madre; no pedimos más de lo necesario; un padre/madre puede revisar, corregir o eliminar la información de su hijo/a en cualquier momento; y nunca usamos la información de un niño/a para publicidad dirigida ni para entrenar herramientas de IA sin pedir el consentimiento nuevamente por separado.</p>
+
+    <h4>Tus derechos</h4>
+    <p>Tú — o, en el caso de un niño/a, su padre/madre/tutor legal — puedes pedirnos en cualquier momento ver, corregir o eliminar tu información, o retirar tu consentimiento. Durante el piloto, simplemente escríbenos — todavía no hay un portal separado.</p>
+
+    <h4>Seguridad</h4>
+    <p>Tomamos medidas razonables para limitar quién en nuestro equipo puede acceder a esta información. Como piloto pequeño, nuestros sistemas son más simples que los de una gran empresa — preferimos ser honestos al respecto que prometer de más.</p>
+
+    <h4>Cambios</h4>
+    <p>Esto es un piloto, así que esta política puede cambiar a medida que aprendemos. Si un cambio afecta lo que hacemos con tu información, te lo diremos directamente.</p>
+
+    <h4>Contacto</h4>
+    <p>Preguntas o solicitudes: [email/contacto]</p>
+  
+  </div>
+</div>
+
+<!-- PREGUNTAS -->
+<section class="white" id="faq-es">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--violet)">Preguntas</span>
+      <h2>Preguntas que vale la pena responder desde el principio.</h2>
+    </div>
+    <div class="faq-list">
+      <details open>
+        <summary>¿Con qué edades trabajan?</summary>
+        <p class="a">Los tutores tienen de 12 a 18 años. Los estudiantes, de 10 a 18 años.</p>
+      </details>
+      <details>
+        <summary>¿Es un servicio de tutorías de inglés normal?</summary>
+        <p class="a">No exactamente. El objetivo principal del piloto es darles a los niños práctica conversacional significativa en inglés y ayudarlos a ganar confianza al usar el idioma. Las clases pueden tener estructura y un tema, pero no prometemos un plan de estudios tradicional centrado en gramática.</p>
+      </details>
+      <details>
+        <summary>¿Mejorará la gramática de mi hijo/a?</summary>
+        <p class="a">Puede que aprenda gramática de forma natural a través de la conversación y la práctica, pero enseñar gramática no es la promesa principal del piloto. Nuestra prioridad es ayudar a los niños a usar el inglés con más libertad y confianza.</p>
+      </details>
+      <details>
+        <summary>¿Por qué un adolescente debería enseñarle a mi hijo/a?</summary>
+        <p class="a">Porque estar cerca en edad puede facilitar la comunicación. Un tutor joven puede entender los intereses, las referencias y la forma de comunicarse del estudiante, lo que crea una conversación más natural.</p>
+      </details>
+      <details>
+        <summary>¿Es seguro?</summary>
+        <p class="a">Los padres de ambos lados son parte del proceso, los tutores jóvenes tienen un padre o tutor legal verificado, las clases se graban, la comunicación es moderada y se considera la edad al emparejar tutores y estudiantes.</p>
+      </details>
+      <details>
+        <summary>¿Cómo se seleccionan los tutores?</summary>
+        <p class="a">Revisamos cada solicitud, incluyendo edad, nivel de inglés, experiencia, intereses y disponibilidad.</p>
+      </details>
+      <details>
+        <summary>¿Qué pasa si mi hijo/a no conecta con el tutor?</summary>
+        <p class="a">Dínoslo. Una buena pareja importa más que forzar una que no funciona. Durante el piloto, nuestro equipo te ayudará a buscar una mejor opción.</p>
+      </details>
+      <details>
+        <summary>¿Cómo funciona el pago?</summary>
+        <p class="a">Las condiciones de pago se explican y se confirman con la familia antes de la primera clase. Actualmente estamos probando el modelo, así que todavía no publicamos precios fijos.</p>
+      </details>
+      <details>
+        <summary>¿Podemos unirnos si estamos fuera de EE. UU.?</summary>
+        <p class="a">Estamos empezando con un piloto internacional pequeño. Cuéntanos dónde te encuentras y te diremos si por ahora podemos apoyar a tu familia.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">Guruto</div>
+        <p style="margin-top:8px;max-width:280px;">Un piloto pequeño y cerrado que conecta a tutores jóvenes con estudiantes que quieren hablar con más confianza.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#students-es">Para padres</a>
+        <a href="#tutors-es">Para tutores</a>
+        <a href="#directory-es">Tutores</a>
+        <a href="#safety-es">Seguridad y confianza</a>
+        <a href="#faq-es">Preguntas</a>
+        <a href="#" class="open-policy-link" data-open-modal="policy">Política de Privacidad</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© Guruto, [Año]. Todos los derechos reservados.</span>
+      <span>¿Preguntas? <a href="mailto:PASTE_CONTACT_EMAIL_HERE" style="color:var(--lime);">PASTE_CONTACT_EMAIL_HERE</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+
+
+<script>
+  var TITLES = {"en":"Guruto — English you actually want to speak","ru":"Guruto — Английский, на котором действительно хочется говорить","es":"Guruto — El inglés que de verdad quieres hablar"};
+  var DESCS = {"en":"Guruto connects children with young tutors close enough in age to understand their world. A small, closed pilot.","ru":"Guruto объединяет детей с молодыми тьюторами, близкими им по возрасту. Небольшой закрытый пилот.","es":"Guruto conecta a niños con tutores jóvenes lo bastante cercanos en edad como para entender su mundo. Un piloto pequeño y cerrado."};
+  function setLang(lang){
+    document.querySelectorAll('.lang-page').forEach(function(el){
+      el.classList.toggle('active', el.getAttribute('data-lang') === lang);
+    });
+    document.querySelectorAll('.lang-switch a').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-lang') === lang);
+    });
+    document.documentElement.setAttribute('lang', lang);
+    if (TITLES[lang]) document.title = TITLES[lang];
+    var metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc && DESCS[lang]) metaDesc.setAttribute('content', DESCS[lang]);
+    window.scrollTo(0,0);
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('.lang-switch a');
+    if (!a) return;
+    e.preventDefault();
+    setLang(a.getAttribute('data-lang'));
+  });
+  setLang('en');
+</script>
+
+
+<script>
+  // ---- modal open/close (policy, tutor-form, student-form) ----
+  document.addEventListener('click', function(e){
+    var opener = e.target.closest('[data-open-modal]');
+    if (opener) {
+      e.preventDefault();
+      var page = opener.closest('.lang-page');
+      var lang = page ? page.getAttribute('data-lang') : 'en';
+      var key = opener.getAttribute('data-open-modal');
+      var modal = document.querySelector('.modal-backdrop[data-modal="' + key + '-' + lang + '"]');
+      if (modal) { modal.classList.add('open'); document.body.classList.add('modal-lock'); }
+      return;
+    }
+    var closeBtn = e.target.closest('.modal-close');
+    if (closeBtn) {
+      var backdrop = closeBtn.closest('.modal-backdrop');
+      backdrop.classList.remove('open');
+      document.body.classList.remove('modal-lock');
+      return;
+    }
+    if (e.target.classList && e.target.classList.contains('modal-backdrop')) {
+      e.target.classList.remove('open');
+      document.body.classList.remove('modal-lock');
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-backdrop.open').forEach(function(m){ m.classList.remove('open'); });
+      document.body.classList.remove('modal-lock');
+    }
+  });
+
+  // ---- application forms: client-side validation + confirmation state ----
+  // (No backend wired up yet -- this just validates and shows a confirmation.
+  //  Google Sheets / real submission endpoint gets added later.)
+  document.querySelectorAll('.app-form').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      var groups = form.querySelectorAll('[data-require-group="1"]');
+      for (var i = 0; i < groups.length; i++) {
+        var g = groups[i];
+        var checked = g.querySelectorAll('input[type="checkbox"]:checked');
+        if (checked.length === 0) {
+          g.scrollIntoView({behavior:'smooth', block:'center'});
+          g.style.outline = '2px solid #e00';
+          g.style.outlineOffset = '4px';
+          setTimeout(function(){ g.style.outline=''; }, 2500);
+          return;
+        }
+      }
+
+      var success = form.parentElement.querySelector('.form-success');
+      form.hidden = true;
+      if (success) {
+        success.hidden = false;
+        success.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+  });
+</script>
+<script>
+/* Guruto: paste the Apps Script web app URL here to start collecting applications */
+window.GURUTO_ENDPOINT = "https://script.google.com/macros/s/AKfycbwDB-0eVpcFbfiOktdhG235XXETrD3mYOv7bcxDUI2ViQZJRYIPSut0yU_yVKxKO_YnRA/exec";
+
+/* Guruto — stepped application flows.
+   Mounts into <div class="gq" data-flow="tutor|student" data-lang="en|ru|es"></div>
+   No backend: answers are kept in localStorage and dumped on submit. */
+(function(){
+
+/* ---------------- interests (shared ids across languages) ---------------- */
+var INT_IDS = ['games','anime','comics','music_l','music_p','sport','dance','animals','draw','code',
+               'science','books','films','cook','fashion','nature','video','board','history','cars'];
+
+/* ---------------- copy ---------------- */
+var L = {};
+
+L.en = {
+ui:{back:'Back',next:'Next',send:'Send',step:'Step',of:'of',other:'add your own — several is fine, comma-separated',
+  more:'Anything else? Write it in, comma-separated',
+  req:'This one we need',sending:'Sending…',failed:'Could not send — check the connection and press again',
+  handoffTeen:'Pass the phone to a parent',handoffChild:'Pass the phone to your child',
+  copyInline:'or copy a link and send it to them',
+  who_teen:'Tutor',who_parent:'Parent',who_child:'Student',
+  rec:'Start',later:'Record later',keep:'Keep it',again:'Retake',recorded:'Recorded',
+  camNote:'The camera is blocked in this window — prompts and timer still work, recording is wired up server-side.',
+  retakeNote:'Retake as often as you like. The second take is almost always worse though — it is not alive any more.',
+  laterNote:'We will remind you tomorrow. It does not block the form.',
+  copy:'Copy the link',copied:'Link copied',pass:'Hand the phone over',
+  sign:'Signature: first and last name',full:'full text',
+  dump:'Show answers',hide:'Hide answers',restart:'Start over'},
+days:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], bands:['morning','afternoon','evening'],
+slots:['Mon 5pm','Tue 6pm','Wed 5:30pm','Thu 7pm','Fri 4pm','Sat 11am'],
+sliders:[['I talk a lot','I mostly listen'],['I like a plan','I like it loose'],['always joking','more serious']],
+interests:{games:['video games','Minecraft, Valorant, Roblox — what do you sink into?'],
+  anime:['anime and manga','Frieren, JJK, something calmer?'],comics:['comics and superheroes','Marvel, DC, indie — what do you read?'],
+  music_l:['music (listening)','who is on repeat right now?'],music_p:['music (playing)','what do you play, and for how long?'],
+  sport:['sport','which one, and where?'],dance:['dance','what style?'],animals:['animals','do you have one? or which ones do you read about?'],
+  draw:['drawing and design','paper, tablet — and what do you draw?'],code:['code and tech','games, bots, sites?'],
+  science:['science and space','what hooked you last?'],books:['books','what are you reading now?'],
+  films:['film and TV','what do you watch and rewatch?'],cook:['cooking','what can you make?'],
+  fashion:['style','where do your ideas come from?'],nature:['outdoors','where do you go?'],
+  video:['making videos, blogging','where, and about what?'],board:['board games','what do you play at home?'],
+  history:['history and myths','which era, whose myths?'],cars:['cars and machines','what do you fix or study?']},
+lesson:['we talk about stuff we are both into','we swap stories — what happened this week',
+  'we do homework together, step by step','we play, invent, mess about in English',
+  'we take apart something real: a show, a song, a clip','I teach my tutor something of mine — slang, a game, a trick',
+  'long silences are fine, nobody rushes me'],
+lessonTutor:['we talk about stuff we are both into','we swap stories — what happened this week',
+  'we do homework together, step by step','we play, invent, mess about in English',
+  'we take apart something real: a show, a song, a clip','the student teaches me something of theirs',
+  'long silences are fine, nobody rushes anyone'],
+s:{
+/* tutor — teen */
+'tutor.t1.t':'Hey','tutor.t1.d':'Six quick questions. The interesting part comes next.',
+'t_name.l':'What should we call you?','t_name.h':'And what students should call you.',
+'t_age.l':'How old are you?','t_age.p':'16',
+'t_time.l':'When are you usually free?','t_time.h':'Roughly. You can change it later.',
+'t_langs.l':'What languages do you speak?','t_langs.h':'And which English — American, British, something else? If another language is spoken at home, say so.',
+'t_why.l':'Why Guruto?','t_why.h':'Tick whatever is true.',
+'t_why.o':['I want to earn','I want experience for college or my resume','I actually like explaining things','I want to meet kids from other countries'],
+'tutor.t2.t':'Now the real part','tutor.t2.d':'Students read this when they pick a tutor. Write the way you talk.',
+'t_int.l':'What are you into?','t_int.h':'Pick everything that is yours. We ask what exactly under each one.',
+'t_lesson.l':'What does a good lesson look like?',
+'t_ruin.l':'And what would ruin it?',
+'t_fact.l':'One fact about you that would surprise a student','t_fact.h':'One line. It is the first thing they see on your card.',
+'t_self.l':'Three sliders','t_self.h':'There are no right answers.',
+'tutor.t3.t':'Your video','tutor.t3.d':'One minute. Students almost always pick the person they have seen and heard.',
+'t_video.tips':['Window light on your face, not behind you','Quiet room, door shut','Do not memorise anything'],
+'t_video.pr':['Hi! My name is… I am … and I am from…','Name one thing you cannot be pulled away from. And why it is great.','Tell them what a lesson with you is like. What will you do together?','Say something to whoever is watching: messing up is fine, they will get there.'],
+'tutor.handoff_parent.t':'Now grab a parent','tutor.handoff_parent.d':'Their part takes five minutes and it is required — you are under 18. Hand them the phone, or send the link.',
+/* tutor — parent */
+'tutor.p1.t':'About you','tutor.p1.d':'Three questions.',
+'tp_name.l':'Your name, and how you are related to them',
+'tp_contact.l':'Phone and email','tp_contact.h':'In case something goes sideways during a lesson.','tp_contact.p':['+1 …','you@email'],
+'tp_place.l':'Country, city, timezone',
+'tutor.p2.t':'Your teen, and the rules','tutor.p2.d':'',
+'tp_attitude.l':'How do you feel about your teen tutoring others?','tp_attitude.h':'Not a formality — what do you see in it for them?',
+'tp_child.l':'Tell us about them','tp_child.h':'Not grades or awards — what lights them up, what comes easily, why they will make a good tutor.',
+'tp_care.l':'What should we know to make it easier for them?','tp_care.h':'Shy for the first few meetings, hard Tuesdays, anything.',
+'tp_consents.l':'Consents',
+'tp_consents.i':[['I allow my teen to tutor on the platform','I confirm that I am the parent or legal guardian of the teenager named in this form, and I allow them to run lessons on Guruto. They choose their own schedule and can pause or stop at any time. I can withdraw this permission by writing to hello@guruto.co, and their profile is taken down the same day.'],
+  ['I know lessons are recorded as audio','Every lesson is recorded as audio only — never video. The recordings are used for two things: checking that lessons are safe and appropriate, and producing the reports we send to the family of the student about how they are progressing. Recordings are stored for 12 months, are not published anywhere, are not sold or shared with third parties, and are deleted on request.'],
+  ['I have read the house rules','All contact between a tutor and a student happens inside the platform. Tutors and students do not exchange personal phone numbers or social media accounts, do not meet offline, and do not arrange lessons or payments outside Guruto. Tutors do not discuss topics beyond the lesson that would be inappropriate for a minor, and never ask a student for money, gifts, images or personal data. If anything feels wrong to either side, both my teen and I can report it to hello@guruto.co and we answer within 24 hours. Breaking these rules ends the tutor account.'],
+  ['I have read how payment works','My teen is paid per completed lesson. Payment is transferred to an account I provide, not to the teenager directly. A lesson counts as completed once it has taken place; a lesson cancelled by the student less than 12 hours in advance is also paid. Guruto keeps a service fee, which is shown in the tutor profile before every payout. Guruto is not the employer of the teenager: the lessons are freelance work, and any taxes due are the responsibility of the family.']],
+'tutor.p3.t':'Video, the two of you','tutor.p3.d':'Up to a minute, both on camera. Families watch this before they choose.',
+'tp_video.tips':['Sit together, both in frame','Do not prepare a script','One take is enough'],
+'tp_video.pr':['Introduce yourself and say whose parent you are.','Why do you support your teen in teaching others?','What would you say to a family trusting your teen with their child?','A couple of words together — just as you are.'],
+'tutor.p4.t':'The call','tutor.p4.d':'We always talk before the first lesson: a few minutes with you, then a couple with your teen.',
+'tp_slot.l':'Pick a time','tp_slot.h':'Twenty minutes.',
+'tp_slot_other.l':'Another time','tp_slot_other.p':'e.g. Sunday morning',
+'tutor.wrap.t':'Almost there','tutor.wrap.b':'Send this and we read it within 48 hours. Then we call: a few minutes with your parent first, then a couple of minutes with the two of you together — we write on WhatsApp to agree a time.\n\nThe video comes later. Once you are both confirmed you get your own small profile page, and we walk you through recording a one-minute intro right there, with prompts on screen.','tutor.done.t':'Thank you','tutor.done.d':'We read every application. We will message your parent on WhatsApp within 48 hours.',
+/* student — parent */
+'student.sp1.t':'About your family','student.sp1.d':'Five questions about the world your child lives in.',
+'sp_name.l':'Your name',
+'sp_contact.l':'Phone and email','sp_contact.p':['+506 …','you@email'],
+'sp_place.l':'Country, city, timezone',
+'sp_expat.l':'How long have you lived abroad, and how often do you move?','sp_expat.h':'It tells us a lot about the pace your child lives at.',
+'sp_school.l':'Where does your child study?','sp_school.o':['local school','international school','homeschool or worldschool','online school'],
+'sp_langs.l':'What languages are spoken at home?',
+'student.sp2.t':'About your child','student.sp2.d':'The second question matters most — in six months we compare it with what the tutor sees.',
+'sp_goals.l':'What do you want from the lessons?','sp_goals.o':['to speak freely','keep up at school','friends their own age','more confidence','help settling in after the move'],
+'sp_child.l':'Tell us what they are like','sp_child.h':'Not grades — what lights them up, what comes easily, what surprises you.',
+'sp_care.l':'Anything we should know in advance?','sp_care.h':'Topics to avoid, particular needs, a hard stretch. Optional, but it helps.',
+'sp_wish.l':'Any preferences for the tutor?',
+'sp_money.l':'How often, and what budget works?','sp_money.p':['twice a week','per lesson'],
+'sp_consents.l':'Consents',
+'sp_consents.i':[['I consent to my data being processed','I agree that Guruto may keep the answers in this form together with my contact details and of my child, in order to match a tutor, run and support the lessons, and send the reports. The data is not sold, not used for advertising and not passed to anyone outside Guruto except the tutor matched with my child, who sees only what is needed to teach them. I can ask to see, correct or delete everything we hold by writing to hello@guruto.co.'],
+  ['I know lessons are recorded as audio','Every lesson is recorded as audio only — never video. Recordings are used to check that lessons are safe and appropriate and to build the reports we send you about how your child is doing. They are kept for 12 months, are never published or sold, and are deleted on request.'],
+  ['I agree to receive messages about the lessons','Reminders before lessons, changes to the schedule, and the progress reports — by WhatsApp or email, whichever I gave above. No marketing, and I can switch them off in one message.']],
+'sp_source.l':'How did you hear about us?','sp_source.o':['worldschooling groups on Facebook','expat chats','YouTube','friends'],
+'student.handoff_child.t':'Now your child takes over','student.handoff_child.d':'The next part is theirs and we will not show you the answers — that is the deal that makes them honest. Hand over the phone, or send them the link.',
+/* student — child */
+'student.c1.t':'Hey','student.c1.d':'Six questions, honestly. The good part comes next.',
+'s_name.l':'What should we call you?','s_name.h':'Nickname or name — whatever you like.','s_name.p':'e.g. Tim',
+'s_age.l':'How old are you?','s_age.p':'13',
+'s_time.l':'When are you free?','s_time.h':'Roughly. You can change it later.',
+'s_langs.l':'What languages do you speak?','s_langs.h':'At home, at school, with friends — if they are different, say so.',
+'s_why.l':'Why do you want a tutor?','s_why.o':['I want to talk without freezing up','I need help with homework','I want someone to talk to','my parents said so'],
+'student.c2.t':'Now about you','student.c2.d':'Your future tutor reads this. Your parents do not.',
+'s_int.l':'What are you into?','s_int.h':'Pick everything that is yours. We ask what exactly under each one.',
+'s_lesson.l':'What is your perfect lesson?',
+'s_ruin.l':'And what would ruin it?','s_ruin.h':'Like: if they correct every single word. Stays between you and your tutor.',
+'s_hard.l':'What is the worst part of English?','s_hard.o':['speaking out loud','understanding when people talk fast','writing','grammar','I am scared to get it wrong, so I go quiet'],
+'s_self.l':'Three sliders','s_self.h':'There are no right answers.',
+'student.c3.t':'Your video','student.c3.d':'Forty seconds. Only the tutor we match you with will see it.',
+'s_video.tips':['Say it how you would say it — nobody cares about mistakes','Window light on your face','Do it once, do not rehearse'],
+'s_video.pr':['Hi! What is your name, how old are you, where are you?','Show or tell one thing of yours: a game, a drawing, a pet, anything.','Tell your future tutor what you want from them. One sentence is plenty.'],
+'student.sp3.t':'Video, the two of you','student.sp3.d':'Up to a minute, both on camera. The tutor family sees who their kid is meeting.',
+'spv_video.tips':['Sit together, both in frame','Do not prepare a script','One take is enough'],
+'spv_video.pr':['Introduce yourself and say whose parent you are.','Tell us about your child: who they are and what matters most right now.','What do you want from the lessons and from the tutor?','A couple of words together — just as you are.'],
+'student.sp4.t':'The call','student.sp4.d':'A few minutes with you, then a couple of minutes with your child. Then we start.',
+'sp_slot.l':'Pick a time','sp_slot.h':'Twenty minutes.',
+'sp_slot_other.l':'Another time','sp_slot_other.p':'e.g. Saturday after 6pm',
+'student.wrap.t':'Almost there','student.wrap.b':'Send this and we read it within 48 hours. Then we call: a few minutes with the parent first, then a couple of minutes with the two of you together, so nobody meets a stranger — we write on WhatsApp to agree a time.\n\nThe video comes later. Once you are confirmed you get a small profile page, and we walk you through recording a short intro right there.','student.done.t':'Thank you','student.done.d':'We will look for a tutor and confirm the call on WhatsApp.'
+}};
+
+L.ru = {
+ui:{back:'Назад',next:'Дальше',send:'Отправить',step:'Шаг',of:'из',other:'свой вариант — можно несколько, через запятую',
+  more:'Что ещё? Впиши через запятую',
+  req:'Без этого не сможем',sending:'Отправляем…',failed:'Не отправилось — проверь связь и нажми ещё раз',
+  handoffTeen:'Передать телефон родителю',handoffChild:'Передать телефон ребёнку',
+  copyInline:'или скопировать ссылку и отправить',
+  who_teen:'Тьютор',who_parent:'Родитель',who_child:'Ученик',
+  rec:'Начать',later:'Записать позже',keep:'Оставить это',again:'Переснять',recorded:'Записано',
+  camNote:'Камера в этом окне недоступна — подсказки и таймер работают, запись подключается на сервере.',
+  retakeNote:'Пересними сколько хочешь. Но вторая версия почти всегда хуже первой — она уже не живая.',
+  laterNote:'Напомним завтра. Анкету это не блокирует.',
+  copy:'Скопировать ссылку',copied:'Ссылка скопирована',pass:'Передать телефон',
+  sign:'Подпись: имя и фамилия',full:'полный текст',
+  dump:'Показать ответы',hide:'Скрыть ответы',restart:'Заполнить заново'},
+days:['пн','вт','ср','чт','пт','сб','вс'], bands:['утро','день','вечер'],
+slots:['Пн 17:00','Вт 18:00','Ср 17:30','Чт 19:00','Пт 16:00','Сб 11:00'],
+sliders:[['больше говорю','больше слушаю'],['люблю, когда есть план','люблю, когда как пойдёт'],['постоянно шучу','скорее серьёзный']],
+interests:{games:['видеоигры','Minecraft, Valorant, Roblox — во что залипаешь?'],
+  anime:['аниме и манга','Frieren, JJK, что-то поспокойнее?'],comics:['комиксы и супергерои','Марвел, DC, инди — что читаешь?'],
+  music_l:['музыка (слушаю)','кто сейчас на репите?'],music_p:['музыка (играю сам)','на чём играешь и давно ли?'],
+  sport:['спорт','каким занимаешься и где?'],dance:['танцы','какой стиль?'],animals:['животные','у тебя кто-то есть? или про кого читаешь?'],
+  draw:['рисование и дизайн','на бумаге, в планшете, что рисуешь?'],code:['код и технологии','что делаешь: игры, боты, сайты?'],
+  science:['наука и космос','что зацепило последним?'],books:['книги','что читаешь сейчас?'],
+  films:['фильмы и сериалы','что смотришь и пересматриваешь?'],cook:['готовка','что умеешь готовить?'],
+  fashion:['мода и стиль','откуда берёшь идеи?'],nature:['природа и походы','куда ходишь?'],
+  video:['снимаю видео, веду блог','где и про что?'],board:['настолки','во что играете дома?'],
+  history:['история и мифы','какая эпоха или чьи мифы?'],cars:['машины и техника','что чинишь или изучаешь?']},
+lesson:['болтаем про то, что нам обоим интересно','рассказываем друг другу истории — что случилось за неделю',
+  'делаем домашку вместе, шаг за шагом','играем, придумываем, дурачимся на английском',
+  'разбираем что-то конкретное: сериал, песню, ролик','я учу тьютора чему-то своему — сленгу, игре, трюку',
+  'можно долго молчать и думать, никто не торопит'],
+lessonTutor:['болтаем про то, что нам обоим интересно','рассказываем друг другу истории — что случилось за неделю',
+  'делаем домашку вместе, шаг за шагом','играем, придумываем, дурачимся на английском',
+  'разбираем что-то конкретное: сериал, песню, ролик','ученик учит меня чему-то своему',
+  'можно долго молчать и думать, никто не торопит'],
+s:{
+'tutor.t1.t':'Привет','tutor.t1.d':'Шесть вопросов, быстро. Потом расскажешь самое интересное.',
+'t_name.l':'Как тебя зовут?','t_name.h':'И как хочешь, чтобы тебя звали ученики.',
+'t_age.l':'Сколько тебе лет?','t_age.p':'16',
+'t_time.l':'Когда ты свободен?','t_time.h':'Приблизительно, потом поменяешь.',
+'t_langs.l':'На каких языках ты говоришь?','t_langs.h':'И какой у тебя английский: американский, британский, другой? Если дома говорят на другом языке, тоже напиши.',
+'t_why.l':'Зачем тебе Гуруто?','t_why.h':'Отметь всё, что честно.',
+'t_why.o':['хочу заработать','нужен опыт для колледжа или резюме','мне реально нравится объяснять','хочу познакомиться с ребятами из других стран'],
+'tutor.t2.t':'Теперь про тебя','tutor.t2.d':'Это читает ученик, который выбирает тьютора. Пиши так, как говоришь.',
+'t_int.l':'Что тебе нравится?','t_int.h':'Выбери всё своё. Под каждым спросим, что именно.',
+'t_lesson.l':'Каким будет твой идеальный урок?',
+'t_ruin.l':'А что бы точно всё испортило?',
+'t_fact.l':'Какой факт о тебе удивит ученика?','t_fact.h':'Одна строчка. Её он увидит первой в твоей карточке.',
+'t_self.l':'Три ползунка про тебя','t_self.h':'Правильных ответов нет.',
+'tutor.t3.t':'Видео','tutor.t3.d':'Минута. Ученики почти всегда выбирают того, кого увидели и услышали.',
+'t_video.tips':['Свет из окна на лицо, не в спину','Тихая комната, дверь закрыта','Не учи текст наизусть'],
+'t_video.pr':['Привет! Меня зовут… мне … лет, я из…','Назови одну вещь, от которой тебя не оторвать. И почему она классная.','Расскажи, как проходит урок с тобой. Что вы будете делать вместе?','Подбодри того, кто смотрит: ошибаться не страшно, у него получится.'],
+'tutor.handoff_parent.t':'Теперь позови родителя','tutor.handoff_parent.d':'Его часть — пять минут, и без неё нельзя: тебе меньше 18. Передай телефон или отправь ссылку.',
+'tutor.p1.t':'Про вас','tutor.p1.d':'Три вопроса.',
+'tp_name.l':'Как вас зовут и кем вы приходитесь ребёнку?',
+'tp_contact.l':'Телефон и почта','tp_contact.h':'На случай, если что-то пойдёт не так во время урока.','tp_contact.p':['+1 …','вы@почта'],
+'tp_place.l':'Страна, город, часовой пояс',
+'tutor.p2.t':'Про ребёнка и про правила','tutor.p2.d':'',
+'tp_attitude.l':'Как вы относитесь к тому, что ваш ребёнок будет тьютором?','tp_attitude.h':'Это не формальность: что вы в этом видите для него?',
+'tp_child.l':'Расскажите нам о своём ребёнке','tp_child.h':'Не про оценки и достижения — про то, чем он загорается, что получается само собой, почему из него выйдет хороший тьютор.',
+'tp_care.l':'Что нам стоит знать, чтобы ему было легче?','tp_care.h':'Например, он стесняется первые встречи или у него тяжёлые вторники.',
+'tp_consents.l':'Согласия',
+'tp_consents.i':[['Разрешаю ребёнку проводить уроки на платформе','Подтверждаю, что я родитель или законный представитель подростка, указанного в анкете, и разрешаю ему вести занятия в Гуруто. Он сам выбирает расписание и может поставить занятия на паузу или прекратить их в любой момент. Я могу отозвать разрешение письмом на hello@guruto.co, и профиль снимается в тот же день.'],
+  ['Знаю, что занятия записываются в аудио','Каждое занятие записывается только в аудио, видео мы не пишем никогда. Записи нужны для двух вещей: проверить, что урок прошёл безопасно и по правилам, и подготовить отчёт семье ученика о том, как он продвигается. Записи хранятся 12 месяцев, нигде не публикуются, не продаются и не передаются третьим лицам, а по запросу удаляются.'],
+  ['Прочитал правила платформы','Всё общение тьютора и ученика проходит внутри платформы. Тьютор и ученик не обмениваются личными телефонами и соцсетями, не встречаются офлайн и не договариваются об уроках и оплате в обход Гуруто. Тьютор не обсуждает темы, неуместные для несовершеннолетнего, и никогда не просит у ученика денег, подарков, фотографий или личных данных. Если что-то пошло не так, и я, и мой ребёнок можем написать на hello@guruto.co — отвечаем в течение 24 часов. Нарушение правил закрывает аккаунт тьютора.'],
+  ['Прочитал, как устроена оплата','Ребёнок получает оплату за проведённые уроки. Выплата уходит на счёт, который указываю я, а не подростку напрямую. Урок считается проведённым после того, как состоялся; урок, отменённый учеником менее чем за 12 часов, тоже оплачивается. Гуруто удерживает сервисный сбор, его размер показан в профиле тьютора до каждой выплаты. Гуруто не является работодателем подростка: занятия — это самостоятельная работа, и налоги остаются зоной ответственности семьи.']],
+'tutor.p3.t':'Видео вдвоём с ребёнком','tutor.p3.d':'До минуты, оба в кадре. Это видео семьи учеников смотрят перед выбором.',
+'tp_video.tips':['Садитесь рядом, оба в кадре','Не готовьте текст','Хватит одного дубля'],
+'tp_video.pr':['Представьтесь и скажите, чей вы родитель.','Почему вы поддерживаете ребёнка в том, чтобы он учил других?','Что вы скажете семье, которая доверит вашему ребёнку своего?','Пара слов вдвоём — просто как вы есть.'],
+'tutor.p4.t':'Созвон','tutor.p4.d':'Мы всегда говорим до первого урока: несколько минут с вами, потом пара минут вместе с ребёнком.',
+'tp_slot.l':'Выберите время','tp_slot.h':'Двадцать минут.',
+'tp_slot_other.l':'Своё время','tp_slot_other.p':'например, воскресенье утром',
+'tutor.wrap.t':'Почти всё','tutor.wrap.b':'Отправляй — мы прочитаем в течение 48 часов. Дальше созвон: сначала несколько минут с родителем, потом пара минут вместе с тобой. Напишем в WhatsApp и договоримся о времени.\n\nВидео будет позже. Когда мы вас подтвердим, появится небольшой личный кабинет, и там мы поможем записать минутное видео с подсказками на экране.','tutor.done.t':'Спасибо','tutor.done.d':'Мы читаем каждую анкету. Напишем родителю в WhatsApp в течение 48 часов.',
+'student.sp1.t':'Про вашу семью','student.sp1.d':'Пять вопросов о контексте, в котором растёт ребёнок.',
+'sp_name.l':'Как вас зовут?',
+'sp_contact.l':'Телефон и почта','sp_contact.p':['+506 …','вы@почта'],
+'sp_place.l':'Страна, город, часовой пояс',
+'sp_expat.l':'Давно ли вы живёте за границей и часто ли переезжаете?','sp_expat.h':'Это помогает понять, в каком темпе живёт ребёнок.',
+'sp_school.l':'Где ребёнок учится?','sp_school.o':['местная школа','международная школа','хоумскулинг или ворлдскулинг','онлайн-школа'],
+'sp_langs.l':'На каких языках говорят у вас дома?',
+'student.sp2.t':'Про ребёнка','student.sp2.d':'Второй вопрос здесь самый важный — через полгода мы сверим его с тем, что увидит тьютор.',
+'sp_goals.l':'Чего вы ждёте от занятий?','sp_goals.o':['чтобы заговорил свободно','подтянуть школьную программу','чтобы появилось общение со сверстниками','чтобы стал увереннее в себе','помочь пережить переезд и новую школу'],
+'sp_child.l':'Расскажите, какой он','sp_child.h':'Не про оценки — про то, чем он загорается, что получается само собой, чем он вас удивляет.',
+'sp_care.l':'Что нам важно знать заранее?','sp_care.h':'Темы, которых лучше не касаться, особенности, сложный период. Необязательно, но помогает.',
+'sp_wish.l':'Есть ли пожелания к тьютору?',
+'sp_money.l':'Как часто хотите заниматься и какой бюджет комфортен?','sp_money.p':['2 раза в неделю','за урок'],
+'sp_consents.l':'Согласия',
+'sp_consents.i':[['Согласен на обработку данных','Соглашаюсь, что Гуруто хранит ответы из этой анкеты вместе с моими контактами и контактами ребёнка, чтобы подобрать тьютора, вести и поддерживать занятия и присылать отчёты. Данные не продаются, не используются для рекламы и не передаются никому за пределами Гуруто, кроме тьютора, подобранного ребёнку, — он видит только то, что нужно для занятий. Я могу запросить, исправить или удалить всё, что мы храним, письмом на hello@guruto.co.'],
+  ['Знаю, что занятия записываются в аудио','Каждое занятие записывается только в аудио, видео мы не пишем никогда. Записи нужны, чтобы проверять, что урок прошёл безопасно и по правилам, и чтобы готовить отчёты о развитии ребёнка. Хранятся 12 месяцев, не публикуются и не продаются, по запросу удаляются.'],
+  ['Согласен получать сообщения о занятиях','Напоминания перед уроками, изменения в расписании и отчёты о занятиях — в WhatsApp или на почту, которые я указал выше. Рекламы не будет, отключить можно одним сообщением.']],
+'sp_source.l':'Откуда вы о нас узнали?','sp_source.o':['группы ворлдскулеров в Facebook','экспат-чаты','YouTube','знакомые'],
+'student.handoff_child.t':'Дальше — часть ребёнка','student.handoff_child.d':'Следующие вопросы его, и ответы мы вам не покажем — это условие того, что он ответит честно. Передайте телефон или отправьте ссылку.',
+'student.c1.t':'Привет','student.c1.d':'Шесть вопросов, честно. Дальше начнётся интересное.',
+'s_name.l':'Как тебя называть?','s_name.h':'Ник или имя — как больше нравится.','s_name.p':'например, Тим',
+'s_age.l':'Сколько тебе лет?','s_age.p':'13',
+'s_time.l':'Когда ты свободен?','s_time.h':'Отметь окошки примерно, потом поменяешь.',
+'s_langs.l':'На каких языках ты говоришь?','s_langs.h':'Дома, в школе, с друзьями — если они разные, так и напиши.',
+'s_why.l':'Зачем тебе тьютор?','s_why.o':['хочу говорить свободнее, без ступора','нужна помощь с домашкой','хочу с кем-то общаться','родители сказали надо'],
+'student.c2.t':'Теперь про тебя','student.c2.d':'Это читает твой будущий тьютор. Родители — нет.',
+'s_int.l':'Что тебе нравится?','s_int.h':'Выбери всё своё. Под каждым спросим, что именно.',
+'s_lesson.l':'Каким будет твой идеальный урок?',
+'s_ruin.l':'А что бы точно всё испортило?','s_ruin.h':'Например: «если будут исправлять каждое слово». Останется между тобой и тьютором.',
+'s_hard.l':'Что в английском бесит больше всего?','s_hard.o':['говорить вслух','понимать на слух, когда быстро','писать тексты','грамматика','страшно ошибиться, и я молчу'],
+'s_self.l':'Три ползунка про тебя','s_self.h':'Правильных ответов нет.',
+'student.c3.t':'Видео','student.c3.d':'Сорок секунд. Это увидит только тот тьютор, которого мы тебе подберём.',
+'s_video.tips':['Говори как говоришь — ошибки тут никого не волнуют','Свет из окна на лицо','Сделай один дубль, не репетируй'],
+'s_video.pr':['Привет! Как тебя зовут, сколько лет, откуда ты?','Покажи или расскажи одну свою вещь: игру, рисунок, питомца, что угодно.','Скажи будущему тьютору, чего ты от него хочешь. Хоть одной фразой.'],
+'student.sp3.t':'Видео вдвоём с ребёнком','student.sp3.d':'До минуты, оба в кадре. Семья тьютора видит, к кому идёт их ребёнок.',
+'spv_video.tips':['Садитесь рядом, оба в кадре','Не готовьте текст','Хватит одного дубля'],
+'spv_video.pr':['Представьтесь и скажите, чей вы родитель.','Расскажите про ребёнка: какой он и что ему сейчас важнее всего.','Что вы хотите от занятий и от тьютора?','Пара слов вдвоём — просто как вы есть.'],
+'student.sp4.t':'Созвон','student.sp4.d':'Несколько минут с вами, потом пара минут вместе с ребёнком. И начинаем.',
+'sp_slot.l':'Выберите время','sp_slot.h':'Двадцать минут.',
+'sp_slot_other.l':'Своё время','sp_slot_other.p':'например, суббота после 18:00',
+'student.wrap.t':'Почти всё','student.wrap.b':'Отправляйте — мы прочитаем в течение 48 часов. Дальше созвон: сначала несколько минут с родителем, потом пара минут вместе с ребёнком, чтобы никто не начинал с незнакомого человека. Напишем в WhatsApp и договоримся о времени.\n\nВидео будет позже. Когда мы вас подтвердим, появится небольшой личный кабинет, и там мы поможем записать короткое видео с подсказками.','student.done.t':'Спасибо','student.done.d':'Подберём тьютора и подтвердим созвон в WhatsApp.'
+}};
+
+L.es = {
+ui:{back:'Atrás',next:'Siguiente',send:'Enviar',step:'Paso',of:'de',other:'otra cosa — varias, separadas por comas',
+  more:'¿Algo más? Escríbelo separado por comas',
+  req:'Esto sí lo necesitamos',sending:'Enviando…',failed:'No se envió — revisa la conexión y pulsa otra vez',
+  handoffTeen:'Pasar el teléfono a un adulto',handoffChild:'Pasar el teléfono a tu hijo',
+  copyInline:'o copiar un enlace y enviárselo',
+  who_teen:'Tutor',who_parent:'Madre o padre',who_child:'Estudiante',
+  rec:'Empezar',later:'Grabar después',keep:'Dejarlo así',again:'Repetir',recorded:'Grabado',
+  camNote:'La cámara está bloqueada en esta ventana — las indicaciones y el temporizador funcionan igual.',
+  retakeNote:'Repite las veces que quieras. Aunque la segunda toma casi siempre sale peor: ya no es viva.',
+  laterNote:'Te lo recordamos mañana. No bloquea el formulario.',
+  copy:'Copiar el enlace',copied:'Enlace copiado',pass:'Pasar el teléfono',
+  sign:'Firma: nombre y apellido',full:'texto completo',
+  dump:'Ver respuestas',hide:'Ocultar respuestas',restart:'Empezar de nuevo'},
+days:['lun','mar','mié','jue','vie','sáb','dom'], bands:['mañana','tarde','noche'],
+slots:['Lun 17:00','Mar 18:00','Mié 17:30','Jue 19:00','Vie 16:00','Sáb 11:00'],
+sliders:[['hablo mucho','escucho más'],['me gusta el plan','me gusta improvisar'],['bromeo siempre','más bien serio']],
+interests:{games:['videojuegos','Minecraft, Valorant, Roblox — ¿en cuál te pierdes?'],
+  anime:['anime y manga','¿Frieren, JJK, algo más tranquilo?'],comics:['cómics y superhéroes','Marvel, DC, indie — ¿qué lees?'],
+  music_l:['música (escucho)','¿qué tienes en repetición?'],music_p:['música (toco)','¿qué tocas y desde cuándo?'],
+  sport:['deporte','¿cuál y dónde?'],dance:['baile','¿qué estilo?'],animals:['animales','¿tienes alguno? ¿sobre cuáles lees?'],
+  draw:['dibujo y diseño','¿en papel, en tableta? ¿qué dibujas?'],code:['código y tecnología','¿juegos, bots, webs?'],
+  science:['ciencia y espacio','¿qué te impresionó último?'],books:['libros','¿qué lees ahora?'],
+  films:['cine y series','¿qué ves y revés?'],cook:['cocina','¿qué sabes preparar?'],
+  fashion:['moda y estilo','¿de dónde sacas ideas?'],nature:['naturaleza y montaña','¿a dónde vas?'],
+  video:['hago videos, blogueo','¿dónde y sobre qué?'],board:['juegos de mesa','¿a qué juegan en casa?'],
+  history:['historia y mitos','¿qué época o mitos de quién?'],cars:['coches y máquinas','¿qué arreglas o estudias?']},
+lesson:['hablamos de lo que nos interesa a los dos','nos contamos historias — qué pasó esta semana',
+  'hacemos la tarea juntos, paso a paso','jugamos, inventamos, hacemos tonterías en inglés',
+  'analizamos algo concreto: una serie, una canción, un video','yo le enseño algo mío: jerga, un juego, un truco',
+  'se puede callar y pensar, nadie me apura'],
+lessonTutor:['hablamos de lo que nos interesa a los dos','nos contamos historias — qué pasó esta semana',
+  'hacemos la tarea juntos, paso a paso','jugamos, inventamos, hacemos tonterías en inglés',
+  'analizamos algo concreto: una serie, una canción, un video','el estudiante me enseña algo suyo',
+  'se puede callar y pensar, nadie apura a nadie'],
+s:{
+'tutor.t1.t':'Hola','tutor.t1.d':'Seis preguntas rápidas. Lo interesante viene después.',
+'t_name.l':'¿Cómo te llamas?','t_name.h':'Y cómo quieres que te llamen los estudiantes.',
+'t_age.l':'¿Cuántos años tienes?','t_age.p':'16',
+'t_time.l':'¿Cuándo sueles estar libre?','t_time.h':'Más o menos. Se puede cambiar después.',
+'t_langs.l':'¿Qué idiomas hablas?','t_langs.h':'¿Y qué inglés: americano, británico, otro? Si en casa se habla otro idioma, cuéntalo.',
+'t_why.l':'¿Por qué Guruto?','t_why.h':'Marca todo lo que sea cierto.',
+'t_why.o':['quiero ganar dinero','quiero experiencia para la universidad o el currículum','me gusta explicar','quiero conocer gente de otros países'],
+'tutor.t2.t':'Ahora lo importante','tutor.t2.d':'Esto lo lee el estudiante que te elige. Escribe como hablas.',
+'t_int.l':'¿Qué te gusta?','t_int.h':'Marca todo lo tuyo. Debajo preguntamos qué exactamente.',
+'t_lesson.l':'¿Cómo sería una buena clase?',
+'t_ruin.l':'¿Y qué lo arruinaría todo?',
+'t_fact.l':'Un dato tuyo que sorprendería al estudiante','t_fact.h':'Una línea. Es lo primero que verá en tu ficha.',
+'t_self.l':'Tres controles','t_self.h':'No hay respuestas correctas.',
+'tutor.t3.t':'Tu video','tutor.t3.d':'Un minuto. Los estudiantes eligen a quien han visto y escuchado.',
+'t_video.tips':['Luz de la ventana en la cara, no detrás','Cuarto tranquilo, puerta cerrada','No memorices nada'],
+'t_video.pr':['¡Hola! Me llamo… tengo … años y soy de…','Nombra algo de lo que no te puedan separar. Y por qué está genial.','Cuenta cómo es una clase contigo. ¿Qué harán juntos?','Anima a quien te mira: equivocarse no da miedo, lo va a lograr.'],
+'tutor.handoff_parent.t':'Ahora llama a tu madre o padre','tutor.handoff_parent.d':'Su parte son cinco minutos y es obligatoria: eres menor de 18. Pásale el teléfono o envíale el enlace.',
+'tutor.p1.t':'Sobre usted','tutor.p1.d':'Tres preguntas.',
+'tp_name.l':'Su nombre y su parentesco con el adolescente',
+'tp_contact.l':'Teléfono y correo','tp_contact.h':'Por si algo sale mal durante una clase.','tp_contact.p':['+1 …','usted@correo'],
+'tp_place.l':'País, ciudad, zona horaria',
+'tutor.p2.t':'Sobre su hijo y las reglas','tutor.p2.d':'',
+'tp_attitude.l':'¿Qué le parece que su hijo enseñe a otros?','tp_attitude.h':'No es un trámite: ¿qué ve usted en esto para él?',
+'tp_child.l':'Cuéntenos cómo es','tp_child.h':'No notas ni premios — qué le enciende, qué le sale solo, por qué será buen tutor.',
+'tp_care.l':'¿Qué deberíamos saber para que le resulte más fácil?','tp_care.h':'Le cuesta el primer encuentro, los martes son duros, lo que sea.',
+'tp_consents.l':'Consentimientos',
+'tp_consents.i':[['Autorizo a mi hijo a dar clases en la plataforma','Confirmo que soy la madre, el padre o el tutor legal del adolescente indicado en este formulario y le autorizo a dar clases en Guruto. Él elige su propio horario y puede pausar o dejarlo cuando quiera. Puedo retirar este permiso escribiendo a hello@guruto.co y su perfil se retira el mismo día.'],
+  ['Sé que las clases se graban en audio','Cada clase se graba solo en audio, nunca en video. Las grabaciones sirven para dos cosas: comprobar que la clase fue segura y adecuada, y preparar el informe que enviamos a la familia del estudiante sobre su progreso. Se conservan 12 meses, no se publican, no se venden ni se ceden a terceros y se borran si se solicita.'],
+  ['He leído las reglas de la plataforma','Todo el contacto entre tutor y estudiante ocurre dentro de la plataforma. No intercambian teléfonos ni redes sociales, no se ven en persona y no acuerdan clases ni pagos fuera de Guruto. El tutor no trata temas inapropiados para un menor y nunca pide al estudiante dinero, regalos, fotos ni datos personales. Si algo va mal, tanto mi hijo como yo podemos escribir a hello@guruto.co y respondemos en 24 horas. Incumplir estas reglas cierra la cuenta del tutor.'],
+  ['He leído cómo funciona el pago','Mi hijo cobra por clase dada. El pago se transfiere a una cuenta que indico yo, no al adolescente directamente. Una clase cuenta como dada una vez ocurrida; una clase cancelada por el estudiante con menos de 12 horas de antelación también se paga. Guruto retiene una comisión de servicio, visible en el perfil del tutor antes de cada pago. Guruto no es el empleador del adolescente: son clases por cuenta propia y los impuestos corresponden a la familia.']],
+'tutor.p3.t':'Video los dos juntos','tutor.p3.d':'Hasta un minuto, ambos en cámara. Las familias lo ven antes de elegir.',
+'tp_video.tips':['Siéntense juntos, ambos en cuadro','No preparen un guion','Con una toma basta'],
+'tp_video.pr':['Preséntese y diga de quién es madre o padre.','¿Por qué apoya que su hijo enseñe a otros?','¿Qué le diría a la familia que le confía su hijo?','Un par de palabras juntos, tal como son.'],
+'tutor.p4.t':'La llamada','tutor.p4.d':'Siempre hablamos antes de la primera clase: unos minutos con usted y un par con su hijo.',
+'tp_slot.l':'Elija una hora','tp_slot.h':'Veinte minutos.',
+'tp_slot_other.l':'Otra hora','tp_slot_other.p':'por ejemplo, domingo por la mañana',
+'tutor.wrap.t':'Casi listo','tutor.wrap.b':'Envíalo y lo leemos en 48 horas. Después llamamos: unos minutos con tu madre o padre y un par contigo, los dos juntos. Escribimos por WhatsApp para acordar la hora.\n\nEl video viene después. Cuando os confirmemos, tendrás tu propia página y allí te guiamos para grabar un minuto de presentación con indicaciones en pantalla.','tutor.done.t':'Gracias','tutor.done.d':'Leemos cada solicitud. Escribiremos por WhatsApp en 48 horas.',
+'student.sp1.t':'Sobre su familia','student.sp1.d':'Cinco preguntas sobre el mundo en el que vive su hijo.',
+'sp_name.l':'¿Cómo se llama usted?',
+'sp_contact.l':'Teléfono y correo','sp_contact.p':['+506 …','usted@correo'],
+'sp_place.l':'País, ciudad, zona horaria',
+'sp_expat.l':'¿Cuánto llevan viviendo fuera y con qué frecuencia se mudan?','sp_expat.h':'Nos dice mucho sobre el ritmo de vida del niño.',
+'sp_school.l':'¿Dónde estudia su hijo?','sp_school.o':['escuela local','escuela internacional','homeschool o worldschool','escuela en línea'],
+'sp_langs.l':'¿Qué idiomas se hablan en casa?',
+'student.sp2.t':'Sobre su hijo','student.sp2.d':'La segunda pregunta es la que más importa: en medio año la compararemos con lo que vea el tutor.',
+'sp_goals.l':'¿Qué espera de las clases?','sp_goals.o':['que hable con soltura','que mejore en la escuela','que tenga amigos de su edad','más confianza','que lleve mejor la mudanza'],
+'sp_child.l':'Cuéntenos cómo es','sp_child.h':'No las notas — qué le enciende, qué le sale solo, qué le sorprende a usted.',
+'sp_care.l':'¿Algo que debamos saber de antemano?','sp_care.h':'Temas que evitar, particularidades, una etapa difícil. Opcional, pero ayuda.',
+'sp_wish.l':'¿Alguna preferencia respecto al tutor?',
+'sp_money.l':'¿Con qué frecuencia y con qué presupuesto?','sp_money.p':['dos veces por semana','por clase'],
+'sp_consents.l':'Consentimientos',
+'sp_consents.i':[['Doy mi consentimiento para el tratamiento de datos','Acepto que Guruto conserve las respuestas de este formulario junto con mis datos de contacto y los de mi hijo, para asignar un tutor, dar y acompañar las clases y enviar los informes. Los datos no se venden, no se usan con fines publicitarios y no se ceden a nadie fuera de Guruto, salvo al tutor asignado, que ve solo lo necesario para enseñar. Puedo pedir ver, corregir o borrar todo lo que guardamos escribiendo a hello@guruto.co.'],
+  ['Sé que las clases se graban en audio','Cada clase se graba solo en audio, nunca en video. Las grabaciones sirven para comprobar que la clase fue segura y adecuada y para preparar los informes sobre el progreso de su hijo. Se conservan 12 meses, no se publican ni se venden y se borran si se solicita.'],
+  ['Acepto recibir mensajes sobre las clases','Recordatorios antes de las clases, cambios de horario e informes de progreso, por WhatsApp o correo, el que indiqué arriba. Sin publicidad, y se pueden desactivar con un mensaje.']],
+'sp_source.l':'¿Cómo supo de nosotros?','sp_source.o':['grupos de worldschooling en Facebook','chats de expatriados','YouTube','conocidos'],
+'student.handoff_child.t':'Ahora le toca a su hijo','student.handoff_child.d':'Las siguientes preguntas son suyas y no le mostraremos las respuestas: ese es el trato que hace que responda con sinceridad. Pásele el teléfono o envíele el enlace.',
+'student.c1.t':'Hola','student.c1.d':'Seis preguntas, con sinceridad. Después viene lo bueno.',
+'s_name.l':'¿Cómo te llamamos?','s_name.h':'Apodo o nombre, como prefieras.','s_name.p':'por ejemplo, Tim',
+'s_age.l':'¿Cuántos años tienes?','s_age.p':'13',
+'s_time.l':'¿Cuándo estás libre?','s_time.h':'Más o menos, se puede cambiar.',
+'s_langs.l':'¿Qué idiomas hablas?','s_langs.h':'En casa, en la escuela, con amigos — si son distintos, dilo.',
+'s_why.l':'¿Para qué quieres un tutor?','s_why.o':['quiero hablar sin bloquearme','necesito ayuda con la tarea','quiero hablar con alguien','mis padres me lo pidieron'],
+'student.c2.t':'Ahora sobre ti','student.c2.d':'Esto lo lee tu futuro tutor. Tus padres no.',
+'s_int.l':'¿Qué te gusta?','s_int.h':'Marca todo lo tuyo. Debajo preguntamos qué exactamente.',
+'s_lesson.l':'¿Cómo sería tu clase perfecta?',
+'s_ruin.l':'¿Y qué lo arruinaría?','s_ruin.h':'Por ejemplo: «si me corrigen cada palabra». Queda entre tú y tu tutor.',
+'s_hard.l':'¿Qué es lo peor del inglés?','s_hard.o':['hablar en voz alta','entender cuando hablan rápido','escribir','la gramática','me da miedo equivocarme y me callo'],
+'s_self.l':'Tres controles','s_self.h':'No hay respuestas correctas.',
+'student.c3.t':'Tu video','student.c3.d':'Cuarenta segundos. Solo lo verá el tutor que te asignemos.',
+'s_video.tips':['Habla como hablas — los errores no le importan a nadie','Luz de la ventana en la cara','Una toma, sin ensayar'],
+'s_video.pr':['¡Hola! ¿Cómo te llamas, cuántos años tienes, de dónde eres?','Enseña o cuenta una cosa tuya: un juego, un dibujo, tu mascota.','Dile a tu futuro tutor qué quieres de él. Con una frase basta.'],
+'student.sp3.t':'Video los dos juntos','student.sp3.d':'Hasta un minuto, ambos en cámara. La familia del tutor ve con quién se encuentra su hijo.',
+'spv_video.tips':['Siéntense juntos, ambos en cuadro','No preparen un guion','Con una toma basta'],
+'spv_video.pr':['Preséntese y diga de quién es madre o padre.','Cuéntenos sobre su hijo: cómo es y qué le importa ahora.','¿Qué espera de las clases y del tutor?','Un par de palabras juntos, tal como son.'],
+'student.sp4.t':'La llamada','student.sp4.d':'Unos minutos con usted y un par con su hijo. Y empezamos.',
+'sp_slot.l':'Elija una hora','sp_slot.h':'Veinte minutos.',
+'sp_slot_other.l':'Otra hora','sp_slot_other.p':'por ejemplo, sábado después de las 18:00',
+'student.wrap.t':'Casi listo','student.wrap.b':'Envíelo y lo leemos en 48 horas. Después llamamos: unos minutos con usted y un par con su hijo, los dos juntos, para que nadie empiece con un desconocido. Escribimos por WhatsApp para acordar la hora.\n\nEl video viene después. Cuando os confirmemos, habrá una pequeña página personal y allí ayudamos a grabar una presentación corta.','student.done.t':'Gracias','student.done.d':'Buscaremos un tutor y confirmaremos la llamada por WhatsApp.'
+}};
+
+/* ---------------- flow structure (language-independent) ---------------- */
+var FLOWS = {
+tutor:[
+ {k:'t1', who:'teen', q:[{id:'t_name',t:'text',req:1},{id:'t_age',t:'text',kind:'number',req:1},
+   {id:'t_langs',t:'area',req:1},{id:'t_time',t:'grid'},{id:'t_why',t:'multi',other:1,req:1}]},
+ {k:'t2', who:'teen', q:[{id:'t_int',t:'interests',req:1},{id:'t_lesson',t:'multi',opts:'lessonTutor',other:1},
+   {id:'t_ruin',t:'area'},{id:'t_fact',t:'text',req:1},{id:'t_self',t:'sliders'}], submit:'teen'},
+ {k:'handoff_parent', who:'teen', q:[{id:'handoff',t:'handoff'}]},
+ {k:'p1', who:'parent', q:[{id:'tp_name',t:'text',req:1},{id:'tp_contact',t:'two',req:1},{id:'tp_place',t:'text',req:1}]},
+ {k:'p2', who:'parent', q:[{id:'tp_attitude',t:'area',req:1},{id:'tp_child',t:'area',req:1},
+   {id:'tp_care',t:'area'},{id:'tp_consents',t:'consents',req:1}]},
+ {k:'wrap', who:'parent', q:[{id:'wrap',t:'wrap'}], submit:'parent'}
+],
+student:[
+ {k:'sp1', who:'parent', q:[{id:'sp_name',t:'text',req:1},{id:'sp_contact',t:'two',req:1},{id:'sp_place',t:'text',req:1},
+   {id:'sp_expat',t:'area'},{id:'sp_school',t:'multi',single:1,other:1,req:1},{id:'sp_langs',t:'text'}]},
+ {k:'sp2', who:'parent', q:[{id:'sp_goals',t:'multi',other:1,req:1},{id:'sp_child',t:'area',req:1},{id:'sp_care',t:'area'},
+   {id:'sp_wish',t:'area'},{id:'sp_money',t:'two'},{id:'sp_consents',t:'consents',req:1},{id:'sp_source',t:'multi',single:1,other:1}], submit:'parent'},
+ {k:'handoff_child', who:'parent', q:[{id:'handoff',t:'handoff'}]},
+ {k:'c1', who:'child', q:[{id:'s_name',t:'text',req:1},{id:'s_age',t:'text',kind:'number',req:1},
+   {id:'s_langs',t:'area'},{id:'s_time',t:'grid'},{id:'s_why',t:'multi',other:1,req:1}]},
+ {k:'c2', who:'child', q:[{id:'s_int',t:'interests',req:1},{id:'s_lesson',t:'multi',opts:'lesson',other:1},
+   {id:'s_ruin',t:'area'},{id:'s_hard',t:'multi',other:1},{id:'s_self',t:'sliders'}]},
+ {k:'wrap', who:'child', q:[{id:'wrap',t:'wrap'}], submit:'child'}
+]};
+
+/* ---------------- engine ---------------- */
+function el(tag, cls, html){ var n=document.createElement(tag); if(cls) n.className=cls; if(html!=null) n.innerHTML=html; return n; }
+
+function Flow(mount){
+  var flow = mount.getAttribute('data-flow');
+  var lang = mount.getAttribute('data-lang') || 'en';
+  var T = L[lang] || L.en;
+  var steps = FLOWS[flow];
+  var KEY = 'guruto.' + flow + '.' + lang;
+  var state = {i:0, d:{}};
+  try{ var raw = localStorage.getItem(KEY); if(raw){ var p = JSON.parse(raw); if(p && p.d){ state = p; } } }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+  if(!state.app_id){ state.app_id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); save(); }
+
+  var PREFIX = {teen:'t_', child:'s_', parent: (flow === 'tutor' ? 'tp_' : 'sp_')};
+  function slice(part){
+    var pre = PREFIX[part], out = {};
+    Object.keys(state.d).forEach(function(k){ if(k.indexOf(pre) === 0) out[k] = state.d[k]; });
+    return out;
+  }
+  function post(part){
+    var url = window.GURUTO_ENDPOINT;
+    var body = JSON.stringify({app_id:state.app_id, flow:flow, lang:lang, part:part, data:slice(part)});
+    if(!url){ try{ console.log('[guruto] no endpoint set, payload:', body); }catch(e){} return Promise.resolve(); }
+    return fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:body})
+           .then(function(r){ return r.json(); })
+           .then(function(res){ if(res && res.ok === false) throw new Error(res.error || 'server'); });
+  }
+  function s(k){ var v = T.s[k]; return v == null ? '' : v; }
+  function get(id, dflt){ return (id in state.d) ? state.d[id] : dflt; }
+  function set(id, v){ state.d[id] = v; save(); }
+
+  function render(){
+    mount.innerHTML = '';
+    var eb = mount.getAttribute('data-eyebrow');
+    if(eb) mount.appendChild(el('span','eyebrow gq-eyebrow', eb));
+    if(state.i >= steps.length){ return done(); }
+    var st = steps[state.i];
+    var nodes = [];
+
+    var head = el('div','gq-head');
+    var bar = el('div','gq-bar');
+    var fill = el('i'); fill.style.width = ((state.i)/steps.length*100) + '%';
+    bar.appendChild(fill);
+    var meta = el('div','gq-meta');
+    meta.appendChild(el('span','gq-badge', T.ui['who_'+st.who]));
+    meta.appendChild(el('span','gq-count', T.ui.step + ' ' + (state.i+1) + ' ' + T.ui.of + ' ' + steps.length));
+    head.appendChild(bar); head.appendChild(meta);
+    mount.appendChild(head);
+
+    mount.appendChild(el('h2','gq-title', s(flow+'.'+st.k+'.t')));
+    var lede = s(flow+'.'+st.k+'.d');
+    if(lede) mount.appendChild(el('p','gq-lede', lede));
+
+    st.q.forEach(function(q){ var n = field(q, st); nodes.push({q:q, n:n}); mount.appendChild(n); });
+
+    var navRow = el('div','gq-nav');
+    if(state.i > 0){
+      var back = el('button','btn btn-outline gq-back', T.ui.back); back.type='button';
+      back.onclick = function(){ state.i--; save(); render(); };
+      navRow.appendChild(back);
+    }
+    var label = T.ui.next;
+    if(st.k === 'handoff_parent') label = T.ui.handoffTeen;
+    if(st.k === 'handoff_child') label = T.ui.handoffChild;
+    if(st.k === 'wrap') label = T.ui.send;
+    var next = el('button','btn btn-lime', label); next.type='button';
+    next.onclick = function(){
+      var bad = validate(nodes);
+      if(bad){ bad.scrollIntoView({behavior:'smooth', block:'center'}); return; }
+      var go = function(){ state.i++; save(); render(); mount.scrollIntoView({behavior:'smooth', block:'start'}); };
+      if(!st.submit) return go();
+      next.disabled = true; next.textContent = T.ui.sending;
+      var err = navRow.parentNode.querySelector('.gq-sendfail'); if(err) err.remove();
+      post(st.submit).then(go).catch(function(e){
+        next.disabled = false; next.textContent = label;
+        var m = el('p','gq-err gq-sendfail', T.ui.failed);
+        navRow.parentNode.insertBefore(m, navRow);
+        try{ console.error('[guruto] send failed', e); }catch(x){}
+      });
+    };
+    navRow.appendChild(next);
+    mount.appendChild(navRow);
+  }
+
+  function filled(q){
+    var v = state.d[q.id];
+    if(q.t === 'two') return !!((state.d[q.id+'_a']||'').trim() || (state.d[q.id+'_b']||'').trim());
+    if(q.t === 'consents'){
+      var items = s(q.id+'.i') || [];
+      for(var n=0; n<items.length; n++){ if(!state.d[q.id+':'+n]) return false; }
+      return !!(state.d[q.id+':sign']||'').trim();
+    }
+    if(q.t === 'multi' || q.t === 'interests'){
+      return (v && v.length) || !!(state.d[q.id+'_other']||'').trim() || !!(state.d[q.id+'_more']||'').trim();
+    }
+    return !!(v && String(v).trim());
+  }
+
+  function validate(nodes){
+    var first = null;
+    nodes.forEach(function(p){
+      p.n.classList.remove('gq-q--err');
+      var old = p.n.querySelector('.gq-err'); if(old) old.remove();
+      if(p.q.req && !filled(p.q)){
+        p.n.classList.add('gq-q--err');
+        p.n.appendChild(el('div','gq-err', T.ui.req));
+        if(!first) first = p.n;
+      }
+    });
+    return first;
+  }
+
+  function field(q, st){
+    var box = el('div','gq-q');
+    if(q.t !== 'handoff' && q.t !== 'wrap'){
+      box.appendChild(el('div','gq-label' + (q.req ? ' gq-req' : ''), s(q.id+'.l')));
+      var h = s(q.id+'.h'); if(h) box.appendChild(el('p','gq-hint', h));
+    }
+    var b = {text:text, area:area, two:two, multi:multi, interests:interests, sliders:sliders,
+             grid:grid, consents:consents, handoff:handoff, wrap:wrap}[q.t];
+    box.appendChild(b(q, st));
+    return box;
+  }
+
+  function text(q){
+    var i = el('input'); i.type = q.kind || 'text'; i.placeholder = s(q.id+'.p') || '';
+    i.value = get(q.id,''); i.oninput = function(e){ set(q.id, e.target.value); };
+    return i;
+  }
+  function area(q){
+    var i = el('textarea'); i.placeholder = s(q.id+'.p') || ''; i.value = get(q.id,'');
+    i.oninput = function(e){ set(q.id, e.target.value); }; return i;
+  }
+  function two(q){
+    var row = el('div','gq-two'); var ph = s(q.id+'.p') || ['',''];
+    ['a','b'].forEach(function(sfx, n){
+      var i = el('input'); i.type='text'; i.placeholder = ph[n] || '';
+      i.value = get(q.id+'_'+sfx,''); i.oninput = function(e){ set(q.id+'_'+sfx, e.target.value); };
+      row.appendChild(i);
+    });
+    return row;
+  }
+  function multi(q){
+    var wrap = el('div');
+    var opts = q.opts ? T[q.opts] : s(q.id+'.o');
+    var pills = el('div','gq-pills');
+    var chosen = get(q.id, []);
+    opts.forEach(function(o){
+      var b = el('button','gq-pill', o); b.type='button';
+      b.setAttribute('aria-pressed', chosen.indexOf(o) > -1);
+      b.onclick = function(){
+        if(q.single){ chosen = [o]; pills.querySelectorAll('.gq-pill').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); }
+        else { var k = chosen.indexOf(o); if(k>-1) chosen.splice(k,1); else chosen.push(o);
+               b.setAttribute('aria-pressed', chosen.indexOf(o) > -1); }
+        set(q.id, chosen);
+      };
+      pills.appendChild(b);
+    });
+    wrap.appendChild(pills);
+    if(q.other){
+      var i = el('input'); i.type='text'; i.placeholder = T.ui.other; i.className='gq-other';
+      i.value = get(q.id+'_other',''); i.oninput = function(e){ set(q.id+'_other', e.target.value); };
+      wrap.appendChild(i);
+    }
+    return wrap;
+  }
+  function interests(q){
+    var wrap = el('div'), pills = el('div','gq-pills'), fus = el('div','gq-fus');
+    var chosen = get(q.id, []);
+    function draw(){
+      fus.innerHTML = '';
+      chosen.forEach(function(id){
+        var meta = T.interests[id];
+        var f = el('div','gq-fu');
+        f.appendChild(el('b', null, meta ? meta[0] : id));
+        var i = el('input'); i.type='text'; i.placeholder = meta ? meta[1] : '';
+        i.value = get(q.id+':'+id,''); i.oninput = function(e){ set(q.id+':'+id, e.target.value); };
+        f.appendChild(i); fus.appendChild(f);
+      });
+    }
+    INT_IDS.forEach(function(id){
+      var b = el('button','gq-pill', T.interests[id][0]); b.type='button';
+      b.setAttribute('aria-pressed', chosen.indexOf(id) > -1);
+      b.onclick = function(){ var k = chosen.indexOf(id); if(k>-1) chosen.splice(k,1); else chosen.push(id);
+        b.setAttribute('aria-pressed', chosen.indexOf(id) > -1); set(q.id, chosen); draw(); };
+      pills.appendChild(b);
+    });
+    draw(); wrap.appendChild(pills);
+    var more = el('input'); more.type='text'; more.className='gq-other'; more.placeholder = T.ui.more;
+    more.value = get(q.id+'_more',''); more.oninput = function(e){ set(q.id+'_more', e.target.value); };
+    wrap.appendChild(more);
+    wrap.appendChild(fus);
+    return wrap;
+  }
+  function sliders(q){
+    var wrap = el('div');
+    T.sliders.forEach(function(pair, n){
+      var d = el('div','gq-slider');
+      var ends = el('div','gq-ends');
+      ends.appendChild(el('span',null,pair[0])); ends.appendChild(el('span',null,pair[1]));
+      var r = el('input'); r.type='range'; r.min=0; r.max=100; r.value = get(q.id+':'+n, 50);
+      r.oninput = function(e){ set(q.id+':'+n, +e.target.value); };
+      d.appendChild(ends); d.appendChild(r); wrap.appendChild(d);
+    });
+    return wrap;
+  }
+  function grid(q){
+    var g = el('div','gq-grid');
+    var chosen = get(q.id, []);
+    g.appendChild(el('div','gq-rl',''));
+    T.days.forEach(function(d){ g.appendChild(el('div','gq-hd', d)); });
+    T.bands.forEach(function(band){
+      g.appendChild(el('div','gq-rl', band));
+      T.days.forEach(function(d){
+        var key = d+'-'+band;
+        var b = el('button','gq-cell'); b.type='button'; b.setAttribute('aria-label', d+' '+band);
+        b.setAttribute('aria-pressed', chosen.indexOf(key) > -1);
+        b.onclick = function(){ var k = chosen.indexOf(key); if(k>-1) chosen.splice(k,1); else chosen.push(key);
+          b.setAttribute('aria-pressed', chosen.indexOf(key) > -1); set(q.id, chosen); };
+        g.appendChild(b);
+      });
+    });
+    return g;
+  }
+  function consents(q){
+    var wrap = el('div','gq-consents');
+    (s(q.id+'.i')||[]).forEach(function(item, n){
+      var row = el('div','gq-consent');
+      var cb = el('input'); cb.type='checkbox'; cb.id = q.id+'-'+n+'-'+lang;
+      cb.checked = !!get(q.id+':'+n, false);
+      cb.onchange = function(e){ set(q.id+':'+n, e.target.checked); };
+      var txt = el('div');
+      var lab = el('label'); lab.htmlFor = cb.id; lab.textContent = item[0];
+      var more = el('button','gq-more', T.ui.full); more.type='button';
+      var legal = el('div','gq-legal', item[1]);
+      more.onclick = function(){ legal.classList.toggle('open'); };
+      txt.appendChild(lab); txt.appendChild(more); txt.appendChild(legal);
+      row.appendChild(cb); row.appendChild(txt); wrap.appendChild(row);
+    });
+    var sign = el('input'); sign.type='text'; sign.className='gq-sign'; sign.placeholder = T.ui.sign;
+    sign.value = get(q.id+':sign',''); sign.oninput = function(e){ set(q.id+':sign', e.target.value); };
+    wrap.appendChild(sign);
+    return wrap;
+  }
+  function handoff(q, st){
+    var wrap = el('div','gq-handoff');
+    var note = el('p','gq-note','');
+    var link = location.origin + location.pathname + '?flow=' + flow + '&step=' + (state.i+1) + '&lang=' + lang;
+    var copy = el('button','gq-more gq-copy', T.ui.copyInline); copy.type='button';
+    copy.onclick = function(){
+      if(navigator.clipboard){ navigator.clipboard.writeText(link).then(function(){ note.textContent = T.ui.copied; }); }
+      else { note.textContent = link; }
+    };
+    wrap.appendChild(copy); wrap.appendChild(note);
+    return wrap;
+  }
+
+  function wrap_(q){
+    var box = el('div','gq-wrap');
+    box.appendChild(el('h3',null, s(flow+'.wrap.t')));
+    (s(flow+'.wrap.b')||'').split('\n\n').forEach(function(par){
+      box.appendChild(el('p',null,par));
+    });
+    return box;
+  }
+  var wrap = wrap_;
+
+  function done(){
+    var box = el('div','gq-done');
+    box.appendChild(el('h3',null, s(flow+'.done.t')));
+    box.appendChild(el('p',null, s(flow+'.done.d')));
+    var row = el('div','gq-btnrow');
+    var dump = el('button','btn btn-outline btn-sm', T.ui.dump); dump.type='button';
+    var pre = el('pre','gq-dump'); pre.hidden = true; pre.textContent = JSON.stringify(state.d, null, 2);
+    dump.onclick = function(){ pre.hidden = !pre.hidden; dump.textContent = pre.hidden ? T.ui.dump : T.ui.hide; };
+    var again = el('button','btn btn-lime btn-sm', T.ui.restart); again.type='button';
+    again.onclick = function(){ state = {i:0, d:{}}; save(); render(); };
+    row.appendChild(again); row.appendChild(dump);
+    box.appendChild(row); box.appendChild(pre);
+    mount.appendChild(box);
+    try{ console.log('[guruto] ' + flow + '/' + lang, state.d); }catch(e){}
+  }
+
+  /* deep link: ?flow=student&step=3 jumps straight to the child's part */
+  var p = new URLSearchParams(location.search);
+  if(p.get('flow') === flow && p.get('step')){
+    var n = parseInt(p.get('step'), 10);
+    if(!isNaN(n) && n > 0 && n <= steps.length) state.i = n;
+  }
+  render();
+}
+
+document.querySelectorAll('.gq').forEach(Flow);
+
+/* open a flow straight away when the link says so */
+(function(){
+  var p = new URLSearchParams(location.search);
+  var f = p.get('flow');
+  if(!f) return;
+  var lang = p.get('lang') || 'en';
+  var modal = document.querySelector('.modal-backdrop[data-modal="' + f + '-form-' + lang + '"]');
+  if(modal){ modal.classList.add('open'); document.body.classList.add('modal-lock'); }
+})();
+
+})();
+
+</script>
+</body>
+</html>
